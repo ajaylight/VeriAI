@@ -1,0 +1,16 @@
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.env
+.env.*
+*.py[cod]
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+backend/.venv/
+data/fever/*
+!data/fever/README.md
