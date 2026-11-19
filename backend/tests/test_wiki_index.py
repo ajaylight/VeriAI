@@ -51,3 +51,21 @@ def test_build_index_streams_jsonl_from_zip(tmp_path: Path):
     results = search_index("smallest planet Solar System", 3, output)
     assert results[0]["page_id"] == "Example_Page"
     assert results[0]["sentence_id"] == 0
+
+
+def test_build_index_recovers_isolated_invalid_utf8_byte(tmp_path: Path):
+    archive = tmp_path / "legacy-byte.zip"
+    raw_line = (
+        b'{"id":"Degree_Page","text":"Caf\\xc3\\xa9 and 30 \\xb0C",'
+        b'"lines":"0\\tCaf\\xc3\\xa9 reached 30 \\xb0C."}\\n'
+    )
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("wiki-pages/page.jsonl", raw_line)
+
+    output = tmp_path / "legacy-index.sqlite3"
+    stats = build_index(archive, output)
+    assert stats["pages"] == 1
+    assert stats["sentences"] == 1
+    assert stats["utf8_fallback_lines"] == 1
+    results = search_index("Café reached 30", 3, output)
+    assert results[0]["text"] == "Café reached 30 °C."
