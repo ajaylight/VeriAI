@@ -34,7 +34,7 @@ def decode_jsonl_line(raw_line: bytes, member_name: str, line_number: int, encod
         if len(samples) < 5:
             samples.append(f"{member_name}:line {line_number} ({repaired_bytes} byte(s))")
     text = "".join(repaired)
-    return text.removeprefix("\\ufeff") if line_number == 1 else text
+    return text.removeprefix("\ufeff") if line_number == 1 else text
 
 
 def iter_archive_sentences(archive_path: Path, max_pages: int | None = None, encoding_stats: dict | None = None) -> Iterator[tuple[str, int, str]]:

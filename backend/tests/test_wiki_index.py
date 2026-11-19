@@ -54,11 +54,19 @@ def test_build_index_streams_jsonl_from_zip(tmp_path: Path):
 
 
 def test_build_index_recovers_isolated_invalid_utf8_byte(tmp_path: Path):
+    import json
+    import zipfile
+    from app.scripts.build_fever_index import build_index
+
     archive = tmp_path / "legacy-byte.zip"
-    raw_line = (
-        b'{"id":"Degree_Page","text":"Caf\\xc3\\xa9 and 30 \\xb0C",'
-        b'"lines":"0\\tCaf\\xc3\\xa9 reached 30 \\xb0C."}\\n'
-    )
+    page = {
+        "id": "Degree_Page",
+        "text": "Café and 30 °C",
+        "lines": "0" + chr(9) + "Café reached 30 °C.",
+    }
+    raw_line = json.dumps(page, ensure_ascii=False).encode("utf-8")
+    raw_line = raw_line.replace("°".encode("utf-8"), bytes([0xB0])) + bytes([10])
+
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("wiki-pages/page.jsonl", raw_line)
 
