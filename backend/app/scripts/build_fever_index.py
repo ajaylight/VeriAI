@@ -41,7 +41,14 @@ def iter_archive_sentences(archive_path: Path, max_pages: int | None = None, enc
     """Read JSONL members from the ZIP in streaming binary-line mode."""
     stats = encoding_stats if encoding_stats is not None else {}
     with zipfile.ZipFile(archive_path, "r") as archive:
-        members = sorted(name for name in archive.namelist() if name.lower().endswith(".jsonl") and not name.endswith("/"))
+        members = sorted(
+            name
+            for name in archive.namelist()
+            if name.lower().endswith(".jsonl")
+            and not name.endswith("/")
+            and "__MACOSX" not in Path(name).parts
+            and not Path(name).name.startswith("._")
+        )
         if not members:
             raise ValueError("No .jsonl files were found inside the supplied ZIP archive. Check that this is the official FEVER wiki-pages.zip.")
         pages_seen = 0

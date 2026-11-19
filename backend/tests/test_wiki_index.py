@@ -77,3 +77,28 @@ def test_build_index_recovers_isolated_invalid_utf8_byte(tmp_path: Path):
     assert stats["utf8_fallback_lines"] == 1
     results = search_index("Café reached 30", 3, output)
     assert results[0]["text"] == "Café reached 30 °C."
+
+
+def test_build_index_ignores_macos_appledouble_sidecars(tmp_path: Path):
+    import json
+    import zipfile
+    from app.scripts.build_fever_index import build_index
+
+    archive = tmp_path / "macos-style.zip"
+    page = {
+        "id": "Real_Page",
+        "text": "A valid page",
+        "lines": "0" + chr(9) + "This is a real Wikipedia sentence.",
+    }
+    real_jsonl = (json.dumps(page) + "\\n").encode("utf-8")
+    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        zf.writestr("__MACOSX/wiki-pages/._wiki-001.jsonl", b"AppleDouble metadata, not JSONL")
+        zf.writestr("wiki-pages/._wiki-001.jsonl", b"AppleDouble metadata, not JSONL")
+        zf.writestr("wiki-pages/wiki-001.jsonl", real_jsonl)
+
+    output = tmp_path / "macos-style-index.sqlite3"
+    stats = build_index(archive, output)
+    assert stats["pages"] == 1
+    assert stats["sentences"] == 1
+    results = search_index("real Wikipedia sentence", 3, output)
+    assert results[0]["page_id"] == "Real_Page"
