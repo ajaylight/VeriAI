@@ -90,7 +90,7 @@ def test_build_index_ignores_macos_appledouble_sidecars(tmp_path: Path):
         "text": "A valid page",
         "lines": "0" + chr(9) + "This is a real Wikipedia sentence.",
     }
-    real_jsonl = (json.dumps(page) + "\\n").encode("utf-8")
+    real_jsonl = (json.dumps(page) + "\n").encode("utf-8")
     with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED) as zf:
         zf.writestr("__MACOSX/wiki-pages/._wiki-001.jsonl", b"AppleDouble metadata, not JSONL")
         zf.writestr("wiki-pages/._wiki-001.jsonl", b"AppleDouble metadata, not JSONL")
