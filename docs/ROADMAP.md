@@ -1,27 +1,22 @@
 # VeriAI roadmap
 
 ## Milestone 1 — Claim extraction
-- Sentence-level candidate claims, order, and original offsets.
-- API: POST /claims/extract.
+Sentence-level candidate claims, order, and original character offsets.
 
 ## Milestone 2 — FEVER ingestion
-- Read official JSONL safely; preserve IDs, labels, and evidence references.
-- Inspect label counts and samples.
-- APIs: GET /fever/status, /fever/stats, /fever/sample.
+Read official labelled JSONL files; preserve claim IDs, labels, and evidence annotations.
 
-## Milestone 3 — Evidence retrieval
-- Obtain/index the FEVER Wikipedia corpus.
-- Implement BM25 and evaluate Recall@k.
-- Add dense semantic retrieval and compare.
+## Milestone 3 — BM25 evidence retrieval
+- Stream the FEVER wiki-pages JSONL members from the official ZIP archive.
+- Build a local SQLite FTS5 index with one row per numbered Wikipedia sentence.
+- Retrieve top-k sentence candidates with page and sentence identifiers.
+- Evaluate evidence Recall@k using annotated examples from the labelled development split.
 
 ## Milestone 4 — Claim verification
-- Pair retrieved passages with claims.
-- NLI classification: SUPPORTS / REFUTES / NOT ENOUGH INFO.
-- Tune thresholds on development data only.
+Pair retrieved passages with claims and run an NLI model for SUPPORTS / REFUTES / NOT ENOUGH INFO. Tune decision thresholds on development data only.
 
-## Milestone 5 — Application
-- Source-linked explanations, transparent abstention, React interface.
+## Milestone 5 — User-facing application
+Add source-linked explanations, transparent abstention, and a React interface.
 
 ## Milestone 6 — Evaluation
-- Compare lexical baseline, dense retrieval + NLI, hybrid retrieval + NLI.
-- Report macro-F1, per-class precision/recall, evidence Recall@k, and latency.
+Compare lexical BM25, dense retrieval + NLI, and hybrid retrieval + NLI. Report macro-F1, per-class precision/recall, evidence Recall@k, and latency.

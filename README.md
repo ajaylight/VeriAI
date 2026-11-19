@@ -2,7 +2,7 @@
 
 **Evidence-grounded AI answer verification using claim-level retrieval and semantic entailment.**
 
-VeriAI breaks an answer into factual claims, searches a defined evidence collection, and checks whether retrieved evidence supports, contradicts, or is insufficient to verify each claim.
+VeriAI splits an answer into candidate claims, searches an evidence collection, and will classify each claim as supported, contradicted, or insufficiently evidenced.
 
 ## Team
 | Member | USN |
@@ -12,47 +12,66 @@ VeriAI breaks an answer into factual claims, searches a defined evidence collect
 | Ajay Prakash | 1BG24AI005 |
 | Sakshi | 1BG24CS149 |
 
-## Milestones
-1. Sentence-level claim extraction.
-2. FEVER dataset ingestion and inspection.
-3. BM25 and dense semantic evidence retrieval.
-4. Natural Language Inference (NLI) verification.
-5. Claim-level explanations and source references.
-6. React frontend and evaluation dashboard.
-7. Baseline comparisons and held-out evaluation.
+## Setup (Windows / Anaconda Prompt)
+From the repository root:
 
-## Windows setup (Anaconda Prompt)
-From repository root:
 ```cmd
-conda create -n veriai python=3.11 -y
 conda activate veriai
 cd backend
 python -m pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
-Open http://127.0.0.1:8000/docs.
 
-## FEVER data
-Download labelled files to `data/fever/`:
-- https://fever.ai/download/fever/train.jsonl
-- https://fever.ai/download/fever/paper_dev.jsonl
+API docs: http://127.0.0.1:8000/docs
 
-See [data/fever/README.md](data/fever/README.md). Dataset files are excluded from Git. The larger Wikipedia corpus is deferred until retrieval development.
+## FEVER claim data
+Place the labelled `train.jsonl` and `paper_dev.jsonl` files in `data/fever/`. See [data/fever/README.md](data/fever/README.md).
 
-## API
+## Evidence retrieval index
+Download the official `wiki-pages.zip` to `data/fever/wiki-pages.zip`. The indexer reads the JSONL members directly from the ZIP; it does not require extracting the whole corpus first. Build the FTS5 BM25 index from the `backend` directory:
+
+```cmd
+python -m app.scripts.build_fever_index --archive ..\data\fever\wiki-pages.zip --max-pages 20000
+```
+
+This creates a small development index for a smoke test. For the full corpus, omit `--max-pages`:
+
+```cmd
+python -m app.scripts.build_fever_index --archive ..\data\fever\wiki-pages.zip
+```
+
+The default index is `data/index/fever_wiki_fts5.sqlite3`. Check free disk space first; the corpus is large and the generated index may require several GB. Dataset and index files are excluded from Git.
+
+## Current API
 - `GET /health`
 - `POST /claims/extract`
 - `GET /fever/status`
 - `GET /fever/stats?split=train`
 - `GET /fever/sample?split=train&limit=3`
+- `GET /evidence/status`
+- `POST /evidence/search`
+
+Example search body:
+
+```json
+{
+  "claim": "Oliver Reed was a film actor.",
+  "top_k": 5
+}
+```
 
 ## Tests
-From `backend/`: `pytest -q`
+From `backend/`:
 
-## Evaluation discipline
-Preserve FEVER claim IDs, labels, and evidence annotations. Use labelled splits for measured evaluation; do not treat the unlabelled official test split as ground truth. `NOT ENOUGH INFO` means available evidence is insufficient, not that the claim is false.
+```cmd
+python -m pytest -q
+```
 
-## Current status
-- Claim extraction: manually verified through Swagger.
-- FEVER loader and inspection endpoints: implemented; download JSONL files locally to activate them.
-- Evidence retrieval and NLI: planned, not yet implemented.
+## Important evaluation notes
+`NOT ENOUGH INFO` means the available evidence is insufficient; it does not mean the claim is false. FEVER's Wikipedia evidence annotations are sentence references (page ID/title and sentence number). For this reason, evaluation should distinguish records with non-empty annotation sets from records that contain an actual Wikipedia sentence reference.
+
+## Current implementation status
+- Claim extraction: implemented and previously checked through Swagger.
+- FEVER JSONL inspection: implemented.
+- BM25 sentence retrieval: implemented using SQLite FTS5; build the local index before searching.
+- NLI claim verification, dense retrieval, and the frontend: next milestones.

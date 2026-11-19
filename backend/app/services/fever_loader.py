@@ -39,10 +39,23 @@ def iter_jsonl(path: Path) -> Iterator[dict[str, Any]]:
                 raise FeverDataError(f"Empty or invalid claim on line {line_number} of {path.name}")
             yield record
 
+def _has_sentence_reference(evidence: Any) -> bool:
+    if not isinstance(evidence, list):
+        return False
+    for evidence_set in evidence:
+        if not isinstance(evidence_set, list):
+            continue
+        for item in evidence_set:
+            if isinstance(item, list) and len(item) >= 4:
+                wiki_page, sentence_id = item[2], item[3]
+                if isinstance(wiki_page, str) and wiki_page and isinstance(sentence_id, int) and sentence_id >= 0:
+                    return True
+    return False
+
 def summarize_split(split: str, data_dir: Path | None = None) -> dict[str, Any]:
     path = get_split_path(split, data_dir)
     label_counts: Counter[str] = Counter()
-    total = evidence_count = missing_labels = 0
+    total = missing_labels = records_with_sentence_evidence = records_with_evidence_annotations = 0
     unknown_labels: Counter[str] = Counter()
     for record in iter_jsonl(path):
         total += 1
@@ -53,13 +66,18 @@ def summarize_split(split: str, data_dir: Path | None = None) -> dict[str, Any]:
                 unknown_labels[label] += 1
         else:
             missing_labels += 1
-        if record.get("evidence"):
-            evidence_count += 1
+        evidence = record.get("evidence")
+        if isinstance(evidence, list) and len(evidence) > 0:
+            records_with_evidence_annotations += 1
+        if _has_sentence_reference(evidence):
+            records_with_sentence_evidence += 1
     return {
         "split": split, "file": path.name, "total_records": total,
         "label_counts": dict(sorted(label_counts.items())),
         "records_without_label": missing_labels,
-        "records_with_evidence": evidence_count,
+        "records_with_evidence_annotations": records_with_evidence_annotations,
+        "records_with_sentence_evidence": records_with_sentence_evidence,
+        "records_without_sentence_evidence": total - records_with_sentence_evidence,
         "unknown_labels": dict(sorted(unknown_labels.items())),
     }
 
@@ -68,10 +86,7 @@ def get_samples(split: str, limit: int = 5, data_dir: Path | None = None) -> lis
         raise FeverDataError("limit must be between 1 and 20")
     samples = []
     for record in iter_jsonl(get_split_path(split, data_dir)):
-        samples.append({
-            "id": record["id"], "claim": record["claim"],
-            "label": record.get("label"), "evidence": record.get("evidence", []),
-        })
+        samples.append({"id": record["id"], "claim": record["claim"], "label": record.get("label"), "evidence": record.get("evidence", [])})
         if len(samples) >= limit:
             break
     return samples

@@ -6,18 +6,18 @@ from app.services.fever_loader import FeverDataError, get_samples, iter_jsonl, s
 def write_jsonl(path: Path, records: list[dict]) -> None:
     path.write_text("".join(json.dumps(item) + "\n" for item in records), encoding="utf-8")
 
-def test_summarize_split_counts_labels_and_evidence(tmp_path: Path) -> None:
+def test_summarize_split_counts_sentence_evidence_not_nei_placeholder(tmp_path: Path) -> None:
     records = [
         {"id": 1, "claim": "A claim.", "label": "SUPPORTS", "evidence": [[[1, 2, "Page", 0]]]},
         {"id": 2, "claim": "Another claim.", "label": "REFUTES", "evidence": [[[1, 3, "Page", 1]]]},
-        {"id": 3, "claim": "Unknown claim.", "label": "NOT ENOUGH INFO", "evidence": []},
+        {"id": 3, "claim": "Unknown claim.", "label": "NOT ENOUGH INFO", "evidence": [[[1, 4, None, None]]]},
     ]
     write_jsonl(tmp_path / "train.jsonl", records)
     result = summarize_split("train", tmp_path)
     assert result["total_records"] == 3
-    assert result["label_counts"] == {"NOT ENOUGH INFO": 1, "REFUTES": 1, "SUPPORTS": 1}
-    assert result["records_without_label"] == 0
-    assert result["records_with_evidence"] == 2
+    assert result["records_with_evidence_annotations"] == 3
+    assert result["records_with_sentence_evidence"] == 2
+    assert result["records_without_sentence_evidence"] == 1
 
 def test_get_samples_preserves_claim_id_and_evidence(tmp_path: Path) -> None:
     records = [{"id": 99, "claim": "A sample claim.", "label": "SUPPORTS", "evidence": [[[1, 2, "Page", 0]]]}]

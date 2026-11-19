@@ -1,16 +1,13 @@
-# FEVER dataset files
+# FEVER data files
 
-Place the official labelled FEVER JSONL files here:
-- `train.jsonl` — labelled training claims and evidence annotations.
-- `paper_dev.jsonl` — labelled development claims and evidence annotations.
+Keep these files in this folder (do not commit them):
+- `train.jsonl`
+- `paper_dev.jsonl`
+- `wiki-pages.zip` (required for BM25 evidence retrieval)
 
-Downloads:
-- https://fever.ai/download/fever/train.jsonl
-- https://fever.ai/download/fever/paper_dev.jsonl
+Official archive: https://fever.ai/download/fever/wiki-pages.zip
+Official dataset page: https://fever.ai/dataset/fever.html
 
-Each line is a JSON object. The loader preserves claim ID, text, label, and nested
-evidence annotations. Evidence annotations reference Wikipedia page names and
-sentence IDs; they are not the evidence text itself.
+The compressed Wikipedia archive is about 1.7 GB and its JSONL contents are about 7.25 GB. VeriAI streams the JSONL files from the ZIP, so you do not need to create a second extracted copy. The SQLite full-text index can also require several GB; check available disk space before starting.
 
-Do not commit dataset files. They are excluded by .gitignore. The large Wikipedia
-corpus is deferred until retrieval development.
+Each Wikipedia page record includes an `id` and a `lines` field. Each non-empty line in `lines` is formatted as `sentence_id<TAB>sentence_text`. VeriAI indexes each sentence separately and preserves the page ID and sentence ID for traceability.
