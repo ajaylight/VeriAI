@@ -1,7 +1,8 @@
 """Streaming FEVER Wikipedia indexing and BM25 search using SQLite FTS5.
 
-FTS5 stores one row per FEVER sentence. Both page titles and sentence text are
-searchable; BM25 weights title matches more heavily than body-text matches.
+Both Wikipedia page titles and sentence text are searchable. Retrieval first
+looks for an exact subject-page title, ranks sentences within that page, and
+then supplements them with broad BM25 sentence matches.
 """
 from __future__ import annotations
 
@@ -14,6 +15,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_INDEX_PATH = PROJECT_ROOT / "data" / "index" / "fever_wiki_fts5.sqlite3"
 INDEX_SCHEMA_VERSION = "2"
 TOKEN_RE = re.compile(r"[\w]+", flags=re.UNICODE)
+TITLE_TOKEN_RE = re.compile(r"[^\W_]+(?:[.'’&-][^\W_]+)*", flags=re.UNICODE)
 
 SEARCH_STOPWORDS = {
     "a", "an", "the", "is", "was", "were", "are", "am", "be", "been", "being",
@@ -47,6 +49,31 @@ def filter_query_terms(terms: list[str]) -> list[str]:
     """Remove common grammatical terms while preserving negation and conjunction."""
     filtered = [term for term in terms if term not in SEARCH_STOPWORDS]
     return filtered or terms
+
+
+def normalize_page_title(value: str) -> str:
+    """Normalize a FEVER page ID or phrase for exact title comparison."""
+    normalized = value
+    for marker, replacement in (
+        ("-LRB-", " "), ("-RRB-", " "), ("-LSB-", " "), ("-RSB-", " "),
+        ("-LCB-", " "), ("-RCB-", " "),
+    ):
+        normalized = re.sub(marker, replacement, normalized, flags=re.IGNORECASE)
+    normalized = normalized.replace("_", " ")
+    return " ".join(re.findall(r"[\w]+", normalized.casefold(), flags=re.UNICODE))
+
+
+def extract_subject_title_candidates(query: str, max_terms: int = 5) -> list[str]:
+    """Generate longest-first title candidates from the claim's leading content words."""
+    words = TITLE_TOKEN_RE.findall(query)
+    content_words = [
+        word for word in words
+        if normalize_page_title(word) and normalize_page_title(word) not in SEARCH_STOPWORDS
+    ][:max_terms]
+    return [
+        " ".join(content_words[:length])
+        for length in range(len(content_words), 0, -1)
+    ]
 
 
 def build_fts_query(terms: list[str], operator: str = "OR") -> str:
@@ -145,13 +172,98 @@ def open_index_connection(
     return connection
 
 
+def _find_exact_subject_pages(
+    connection: sqlite3.Connection,
+    query: str,
+) -> list[tuple[str, list[str]]]:
+    """Find page IDs whose normalized title exactly matches a leading claim phrase."""
+    for candidate in extract_subject_title_candidates(query):
+        candidate_normalized = normalize_page_title(candidate)
+        terms = tokenize_query(candidate)
+        if not terms:
+            continue
+        title_query = " AND ".join(
+            f'page_id : "{term.replace(chr(34), chr(34) * 2)}"'
+            for term in terms
+        )
+        rows = connection.execute(
+            "SELECT DISTINCT page_id FROM sentences WHERE sentences MATCH ? LIMIT 20000",
+            (title_query,),
+        ).fetchall()
+        exact_matches = [
+            row["page_id"]
+            for row in rows
+            if normalize_page_title(row["page_id"]) == candidate_normalized
+        ]
+        if exact_matches:
+            return [(page_id, terms) for page_id in exact_matches]
+    return []
+
+
+def _search_subject_page(
+    connection: sqlite3.Connection,
+    page_id: str,
+    title_terms: list[str],
+    query: str,
+    top_k: int,
+) -> list[dict[str, Any]]:
+    """Rank matching sentences within an exact subject page before global BM25 results."""
+    title_filter = " AND ".join(
+        f'page_id : "{term.replace(chr(34), chr(34) * 2)}"'
+        for term in title_terms
+    )
+    body_terms = filter_query_terms(tokenize_query(query))
+    body_filter = " OR ".join(
+        f'text : "{term.replace(chr(34), chr(34) * 2)}"'
+        for term in body_terms
+    )
+
+    if body_filter:
+        match_query = f"({title_filter}) AND ({body_filter})"
+    else:
+        match_query = title_filter
+
+    sql = (
+        "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
+        "bm25(sentences, 5.0, 0.0, 1.0) AS bm25_score "
+        "FROM sentences WHERE sentences MATCH ? AND page_id = ? "
+        "ORDER BY bm25(sentences, 5.0, 0.0, 1.0) LIMIT ?"
+    )
+    try:
+        rows = connection.execute(sql, (match_query, page_id, top_k)).fetchall()
+    except sqlite3.OperationalError:
+        rows = []
+
+    # If no sentence in the page matches the claim wording, return its opening
+    # sentences as contextual evidence rather than losing the exact page match.
+    if not rows:
+        title_only_query = f"({title_filter})"
+        rows = connection.execute(
+            "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
+            "bm25(sentences, 5.0, 0.0, 1.0) AS bm25_score "
+            "FROM sentences WHERE sentences MATCH ? AND page_id = ? "
+            "ORDER BY CAST(sentence_id AS INTEGER) LIMIT ?",
+            (title_only_query, page_id, top_k),
+        ).fetchall()
+
+    return [
+        {
+            "page_id": row["page_id"],
+            "sentence_id": row["sentence_id"],
+            "text": row["text"],
+            "bm25_score": float(row["bm25_score"]),
+        }
+        for row in rows
+    ]
+
+
 def search_index_with_connection(
     connection: sqlite3.Connection,
     query: str,
     top_k: int = 5,
     operator: str = "OR",
 ) -> list[dict[str, Any]]:
-    """Search using a caller-owned connection; title matches receive a higher BM25 weight."""
+    """Search exact subject pages first, then supplement with global BM25 matches."""
     if not 1 <= top_k <= 20:
         raise ValueError("top_k must be between 1 and 20")
     terms = tokenize_query(query)
@@ -163,24 +275,47 @@ def search_index_with_connection(
         terms = filter_query_terms(terms)
         normalized_operator = "OR"
     fts_query = build_fts_query(terms, operator=normalized_operator)
+
     try:
-        rows = connection.execute(
+        global_rows = connection.execute(
             "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
             "bm25(sentences, 5.0, 0.0, 1.0) AS bm25_score "
-            "FROM sentences WHERE sentences MATCH ? ORDER BY bm25(sentences, 5.0, 0.0, 1.0) LIMIT ?",
+            "FROM sentences WHERE sentences MATCH ? "
+            "ORDER BY bm25(sentences, 5.0, 0.0, 1.0) LIMIT ?",
             (fts_query, top_k),
         ).fetchall()
-        return [
+        global_results = [
             {
                 "page_id": row["page_id"],
                 "sentence_id": row["sentence_id"],
                 "text": row["text"],
                 "bm25_score": float(row["bm25_score"]),
             }
-            for row in rows
+            for row in global_rows
         ]
     except sqlite3.OperationalError as exc:
         raise WikiIndexError(f"FTS5 search failed: {exc}") from exc
+
+    subject_pages = _find_exact_subject_pages(connection, query)
+    subject_results: list[dict[str, Any]] = []
+    per_page_limit = max(1, min(3, top_k))
+    for page_id, title_terms in subject_pages:
+        subject_results.extend(
+            _search_subject_page(connection, page_id, title_terms, query, per_page_limit)
+        )
+
+    merged: list[dict[str, Any]] = []
+    seen: set[tuple[str, int]] = set()
+    for item in subject_results + global_results:
+        key = (item["page_id"], item["sentence_id"])
+        if key in seen:
+            continue
+        seen.add(key)
+        merged.append(item)
+        if len(merged) >= top_k:
+            break
+
+    return merged
 
 
 def search_index(
