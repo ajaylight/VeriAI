@@ -113,6 +113,27 @@ def test_reusable_connection_supports_filtered_or(tmp_path: Path):
     assert results[0]["page_id"] == "Target"
 
 
+def test_page_title_is_searchable_and_boosted_over_unrelated_body_match(tmp_path: Path):
+    db = tmp_path / "title-search.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Vietnam", 0, "Vietnam is a country in Southeast Asia."),
+        ("Brevard_County_Manatees", 0, "Their mascot was Manny Manatee."),
+        ("Forest_Heights_Collegiate_Institute", 0, "The mascot is a Trojan."),
+        ("Kentucky_Black_Stone_Cherry_album", 0, "It was released through Mascot Records."),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "Vietnam is a mascot", top_k=4, index_path=db, operator="OR_FILTERED"
+    )
+
+    assert results
+    assert results[0]["page_id"] == "Vietnam"
+
+
 def test_search_rejects_invalid_top_k(tmp_path: Path):
     with pytest.raises(ValueError, match="top_k"):
         search_index("some query", 0, tmp_path / "absent.sqlite3")
