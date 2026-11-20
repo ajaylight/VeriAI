@@ -14,6 +14,15 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_INDEX_PATH = PROJECT_ROOT / "data" / "index" / "fever_wiki_fts5.sqlite3"
 TOKEN_RE = re.compile(r"[\w]+", flags=re.UNICODE)
 
+# Common grammatical terms create very large OR match sets. Keep negation
+# and conjunctions because they can materially affect factual claims and names.
+SEARCH_STOPWORDS = {
+    "a", "an", "the", "is", "was", "were", "are", "am", "be", "been", "being",
+    "of", "in", "on", "at", "to", "for", "from", "by", "with", "as",
+    "this", "that", "these", "those", "it", "its", "he", "she", "they",
+    "them", "their", "his", "her", "do", "does", "did", "has", "have", "had",
+}
+
 
 class WikiIndexError(RuntimeError):
     """Raised for an unavailable or malformed search index."""
@@ -33,6 +42,12 @@ def tokenize_query(text: str, max_terms: int = 64) -> list[str]:
         if len(terms) >= max_terms:
             break
     return terms
+
+
+def filter_query_terms(terms: list[str]) -> list[str]:
+    """Remove common grammatical terms while preserving negation and conjunction."""
+    filtered = [term for term in terms if term not in SEARCH_STOPWORDS]
+    return filtered or terms
 
 
 def build_fts_query(terms: list[str], operator: str = "OR") -> str:
@@ -105,7 +120,6 @@ def open_index_connection(
         )
     connection = sqlite3.connect(str(path), timeout=timeout)
     connection.row_factory = sqlite3.Row
-    # Retain frequently accessed FTS pages between consecutive claim searches.
     connection.execute("PRAGMA cache_size=-100000")
     connection.execute("PRAGMA temp_store=MEMORY")
     return connection
@@ -117,13 +131,18 @@ def search_index_with_connection(
     top_k: int = 5,
     operator: str = "OR",
 ) -> list[dict[str, Any]]:
-    """Search using a caller-owned connection; useful for repeated batch queries."""
+    """Search using a caller-owned connection; supports broad, strict and filtered OR."""
     if not 1 <= top_k <= 20:
         raise ValueError("top_k must be between 1 and 20")
     terms = tokenize_query(query)
     if not terms:
         raise ValueError("The claim must contain at least one searchable word (2+ characters).")
-    fts_query = build_fts_query(terms, operator=operator)
+
+    normalized_operator = operator.upper()
+    if normalized_operator == "OR_FILTERED":
+        terms = filter_query_terms(terms)
+        normalized_operator = "OR"
+    fts_query = build_fts_query(terms, operator=normalized_operator)
     try:
         rows = connection.execute(
             "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
