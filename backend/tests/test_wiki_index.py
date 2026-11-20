@@ -249,3 +249,27 @@ def test_build_index_ignores_macos_appledouble_sidecars(tmp_path: Path):
     assert stats["sentences"] == 1
     results = search_index("real Wikipedia sentence", 3, output)
     assert results[0]["page_id"] == "Real_Page"
+
+def test_subject_page_returns_more_than_three_evidence_candidates(tmp_path: Path):
+    db = tmp_path / "deeper-subject-page.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Sample_Town", 0, "Sample Town is a settlement in the county."),
+        ("Sample_Town", 1, "Sample Town has a school and several homes."),
+        ("Sample_Town", 2, "Sample Town has several parks and shops."),
+        ("Sample_Town", 3, "Sample Town has many local community facilities."),
+        ("Sample_Town", 4, "Sample Town is a place served by regional trains."),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "Sample Town is a place",
+        top_k=5,
+        index_path=db,
+        operator="OR_FILTERED",
+    )
+
+    assert len(results) == 5
+    assert all(item["page_id"] == "Sample_Town" for item in results)
