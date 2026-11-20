@@ -1,7 +1,7 @@
 """Streaming FEVER Wikipedia indexing and BM25 search using SQLite FTS5.
 
-FTS5 stores one row per FEVER sentence. The Wikipedia archive can be read
-straight from ZIP without extracting the whole JSONL corpus to disk.
+FTS5 stores one row per FEVER sentence. Both page titles and sentence text are
+searchable; BM25 weights title matches more heavily than body-text matches.
 """
 from __future__ import annotations
 
@@ -81,11 +81,11 @@ def parse_wiki_page(record: dict[str, Any]) -> Iterator[tuple[str, int, str]]:
 
 
 def create_index_schema(connection: sqlite3.Connection) -> None:
-    """Create the FTS5 table and build metadata table."""
+    """Create an FTS5 table with searchable page IDs and sentence text."""
     try:
         connection.execute(
             "CREATE VIRTUAL TABLE sentences USING fts5("
-            "page_id UNINDEXED, sentence_id UNINDEXED, text, "
+            "page_id, sentence_id UNINDEXED, text, "
             "tokenize='unicode61 remove_diacritics 2')"
         )
     except sqlite3.OperationalError as exc:
@@ -131,7 +131,7 @@ def search_index_with_connection(
     top_k: int = 5,
     operator: str = "OR",
 ) -> list[dict[str, Any]]:
-    """Search using a caller-owned connection; supports broad, strict and filtered OR."""
+    """Search using a caller-owned connection; title matches receive a higher BM25 weight."""
     if not 1 <= top_k <= 20:
         raise ValueError("top_k must be between 1 and 20")
     terms = tokenize_query(query)
@@ -146,7 +146,7 @@ def search_index_with_connection(
     try:
         rows = connection.execute(
             "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
-            "bm25(sentences) AS bm25_score "
+            "bm25(sentences, 5.0, 0.0, 1.0) AS bm25_score "
             "FROM sentences WHERE sentences MATCH ? ORDER BY rank LIMIT ?",
             (fts_query, top_k),
         ).fetchall()
