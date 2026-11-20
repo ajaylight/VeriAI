@@ -1,9 +1,13 @@
 """Evaluate FEVER evidence retrieval against annotated Wikipedia sentence IDs.
 
 Run from the backend directory:
-    python -m app.scripts.evaluate_retrieval --split paper_dev --limit 50 --top-k 5 10 --match-mode or
+    python -m app.scripts.evaluate_retrieval --split paper_dev --limit 10 --top-k 5 10 --match-mode or-filtered
 
-Use --match-mode and to compare strict all-term matching against broad OR matching.
+Modes:
+  or          Broad baseline: every claim token is joined with OR.
+  or-filtered Filtered baseline: remove common grammatical terms, then OR.
+  and         Strict diagnostic: every claim token must match.
+
 The evaluator reuses one SQLite connection for the full batch.
 """
 from __future__ import annotations
@@ -25,6 +29,7 @@ from app.services.wiki_index import (
 
 EvidenceRef = tuple[str, int]
 EvidenceSet = set[EvidenceRef]
+MATCH_MODES = {"or": "OR", "and": "AND", "or-filtered": "OR_FILTERED"}
 
 
 def extract_gold_evidence_sets(evidence: Any) -> list[EvidenceSet]:
@@ -90,15 +95,12 @@ def aggregate_metrics(
             complete_evidence_set_count += 1
 
     claim_count = len(evaluated)
-    precision_denominator = k * claim_count
     return {
         "claims": claim_count,
         "gold_sentence_references": gold_sentence_count,
         "retrieved_gold_sentence_references": relevant_sentence_count,
-        "precision_at_k": relevant_sentence_count / precision_denominator,
-        "sentence_recall_at_k": (
-            relevant_sentence_count / gold_sentence_count if gold_sentence_count else 0.0
-        ),
+        "precision_at_k": relevant_sentence_count / (k * claim_count),
+        "sentence_recall_at_k": relevant_sentence_count / gold_sentence_count if gold_sentence_count else 0.0,
         "claim_hit_rate_at_k": claim_hit_count / claim_count,
         "complete_evidence_set_recall_at_k": complete_evidence_set_count / claim_count,
         "claims_with_any_gold_sentence_retrieved": claim_hit_count,
@@ -144,8 +146,8 @@ def run_evaluation(
 ) -> dict[str, Any]:
     if not top_ks or any(k < 1 or k > 20 for k in top_ks):
         raise ValueError("Each --top-k value must be between 1 and 20.")
-    if match_mode not in {"or", "and"}:
-        raise ValueError("match_mode must be 'or' or 'and'.")
+    if match_mode not in MATCH_MODES:
+        raise ValueError(f"match_mode must be one of: {', '.join(sorted(MATCH_MODES))}.")
     top_ks = sorted(set(top_ks))
 
     total_eligible, samples = load_evaluation_records(split, limit, seed)
@@ -155,14 +157,11 @@ def run_evaluation(
             f"{DEFAULT_FEVER_DIR / SPLIT_FILES[split]}."
         )
 
-    label_counts = Counter(
-        str(record.get("label", "UNKNOWN")) for record, _ in samples
-    )
+    label_counts = Counter(str(record.get("label", "UNKNOWN")) for record, _ in samples)
     max_k = max(top_ks)
     evaluated: list[tuple[list[EvidenceSet], list[EvidenceRef]]] = []
     started = time.time()
 
-    # Reuse one open connection so SQLite's page cache remains warm across claims.
     connection = open_index_connection(index_path)
     try:
         for index, (record, gold_sets) in enumerate(samples, start=1):
@@ -171,17 +170,14 @@ def run_evaluation(
                     connection,
                     record["claim"],
                     top_k=max_k,
-                    operator=match_mode.upper(),
+                    operator=MATCH_MODES[match_mode],
                 )
             except ValueError as exc:
                 if "searchable word" not in str(exc):
                     raise
                 results = []
 
-            retrieved = [
-                (item["page_id"], item["sentence_id"])
-                for item in results
-            ]
+            retrieved = [(item["page_id"], item["sentence_id"]) for item in results]
             evaluated.append((gold_sets, retrieved))
 
             if index % 25 == 0 or index == len(samples):
@@ -189,11 +185,7 @@ def run_evaluation(
     finally:
         connection.close()
 
-    metrics = {
-        str(k): aggregate_metrics(evaluated, k)
-        for k in top_ks
-    }
-
+    metrics = {str(k): aggregate_metrics(evaluated, k) for k in top_ks}
     return {
         "split": split,
         "dataset_file": SPLIT_FILES[split],
@@ -214,38 +206,12 @@ def main() -> None:
         description="Evaluate BM25 evidence retrieval against FEVER sentence annotations."
     )
     parser.add_argument("--split", choices=sorted(SPLIT_FILES), default="paper_dev")
-    parser.add_argument(
-        "--limit",
-        type=int,
-        default=50,
-        help="Number of evidence-bearing claims to sample; use 0 for all eligible records.",
-    )
-    parser.add_argument("--seed", type=int, default=42, help="Random sampling seed.")
-    parser.add_argument(
-        "--top-k",
-        type=int,
-        nargs="+",
-        default=[5, 10],
-        help="Retrieval cutoffs to evaluate (each between 1 and 20).",
-    )
-    parser.add_argument(
-        "--match-mode",
-        choices=["or", "and"],
-        default="or",
-        help="OR is broad matching; AND requires all query terms.",
-    )
-    parser.add_argument(
-        "--index",
-        type=Path,
-        default=DEFAULT_INDEX_PATH,
-        help="Path to the built SQLite FTS5 index.",
-    )
-    parser.add_argument(
-        "--output",
-        type=Path,
-        default=None,
-        help="Optional path to save the full evaluation report as JSON.",
-    )
+    parser.add_argument("--limit", type=int, default=10)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--top-k", type=int, nargs="+", default=[5, 10])
+    parser.add_argument("--match-mode", choices=sorted(MATCH_MODES), default="or")
+    parser.add_argument("--index", type=Path, default=DEFAULT_INDEX_PATH)
+    parser.add_argument("--output", type=Path, default=None)
     args = parser.parse_args()
 
     report = run_evaluation(
@@ -264,36 +230,32 @@ def main() -> None:
     print(f"Query mode: {report['match_mode'].upper()}")
     print(f"Sample labels: {report['label_counts_in_sample']}")
     print(f"Elapsed: {report['elapsed_seconds']:.2f} seconds")
+
     for cutoff, values in report["metrics"].items():
         print(f"\n@{cutoff}")
         print(
-            "  Sentence precision: "
-            f"{values['precision_at_k'] * 100:.2f}% "
+            f"  Sentence precision: {values['precision_at_k'] * 100:.2f}% "
             f"({values['retrieved_gold_sentence_references']}/"
             f"{int(cutoff) * values['claims']})"
         )
         print(
-            "  Sentence recall: "
-            f"{values['sentence_recall_at_k'] * 100:.2f}% "
+            f"  Sentence recall: {values['sentence_recall_at_k'] * 100:.2f}% "
             f"({values['retrieved_gold_sentence_references']}/"
             f"{values['gold_sentence_references']})"
         )
         print(
-            "  Claim hit rate: "
-            f"{values['claim_hit_rate_at_k'] * 100:.2f}% "
+            f"  Claim hit rate: {values['claim_hit_rate_at_k'] * 100:.2f}% "
             f"({values['claims_with_any_gold_sentence_retrieved']}/"
             f"{values['claims']})"
         )
         print(
-            "  Complete evidence-set recall: "
+            f"  Complete evidence-set recall: "
             f"{values['complete_evidence_set_recall_at_k'] * 100:.2f}% "
             f"({values['claims_with_a_complete_evidence_set_retrieved']}/"
             f"{values['claims']})"
         )
-        print(
-            f"  Claims returning fewer than @{cutoff}: "
-            f"{values['claims_returning_fewer_than_k_results']}"
-        )
+        print(f"  Claims returning fewer than @{cutoff}: "
+              f"{values['claims_returning_fewer_than_k_results']}")
 
     if args.output:
         args.output.parent.mkdir(parents=True, exist_ok=True)
