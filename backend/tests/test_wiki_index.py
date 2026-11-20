@@ -5,8 +5,10 @@ import pytest
 from app.services.wiki_index import (
     build_fts_query,
     create_index_schema,
+    extract_subject_title_candidates,
     filter_query_terms,
     insert_sentence_batch,
+    normalize_page_title,
     open_index_connection,
     parse_wiki_page,
     search_index,
@@ -37,6 +39,17 @@ def test_filter_query_terms_removes_grammatical_words_and_keeps_negation():
 
 def test_filter_query_terms_falls_back_when_everything_is_a_stopword():
     assert filter_query_terms(["the", "was", "an"]) == ["the", "was", "an"]
+
+
+def test_title_candidate_extraction_keeps_subject_phrase():
+    assert extract_subject_title_candidates("Palo Alto, California is a city.") == [
+        "Palo Alto California", "Palo Alto", "Palo"
+    ]
+
+
+def test_page_title_normalization_handles_fever_parentheses_and_punctuation():
+    assert normalize_page_title("Palo_Alto,_California") == "palo alto california"
+    assert normalize_page_title("Film_-LRB-2005_film-RRB-") == "film 2005 film"
 
 
 def test_build_fts_query_supports_and_mode():
@@ -132,6 +145,29 @@ def test_page_title_is_searchable_and_boosted_over_unrelated_body_match(tmp_path
 
     assert results
     assert results[0]["page_id"] == "Vietnam"
+    assert results[0]["sentence_id"] == 0
+
+
+def test_search_prioritizes_exact_subject_page_sentence(tmp_path: Path):
+    db = tmp_path / "subject-page.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Vietnam", 0, "Vietnam is a country in Southeast Asia."),
+        ("Vietnam", 1, "Vietnam has a long coastline."),
+        ("Mascot_Records", 0, "Mascot Records is a record label."),
+        ("Tusk_mascot", 1, "The current live mascot is Tusk IV."),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "Vietnam is a mascot", top_k=5, index_path=db, operator="OR_FILTERED"
+    )
+
+    assert results
+    assert results[0]["page_id"] == "Vietnam"
+    assert results[0]["sentence_id"] == 0
 
 
 def test_search_rejects_invalid_top_k(tmp_path: Path):
