@@ -1,11 +1,11 @@
 import sqlite3
 from pathlib import Path
-
 import pytest
 
 from app.services.wiki_index import (
     build_fts_query,
     create_index_schema,
+    filter_query_terms,
     insert_sentence_batch,
     open_index_connection,
     parse_wiki_page,
@@ -27,6 +27,16 @@ def test_tokenize_query_deduplicates_and_builds_safe_fts_query():
     terms = tokenize_query("The river, river banks and water!")
     assert terms == ["the", "river", "banks", "and", "water"]
     assert build_fts_query(terms) == '"the" OR "river" OR "banks" OR "and" OR "water"'
+
+
+def test_filter_query_terms_removes_grammatical_words_and_keeps_negation():
+    assert filter_query_terms(["the", "oliver", "was", "not", "an", "actor"]) == [
+        "oliver", "not", "actor"
+    ]
+
+
+def test_filter_query_terms_falls_back_when_everything_is_a_stopword():
+    assert filter_query_terms(["the", "was", "an"]) == ["the", "was", "an"]
 
 
 def test_build_fts_query_supports_and_mode():
@@ -78,6 +88,29 @@ def test_reusable_connection_supports_strict_and_search(tmp_path: Path):
     assert results
     assert all("Oliver" in item["text"] and "Reed" in item["text"] for item in results)
     assert results[0]["page_id"] == "Both_Terms"
+
+
+def test_reusable_connection_supports_filtered_or(tmp_path: Path):
+    db = tmp_path / "filtered-or.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Target", 0, "Oliver Reed was an actor."),
+        ("Distractor", 0, "The actor was very popular."),
+    ])
+    con.commit()
+    con.close()
+
+    connection = open_index_connection(db)
+    try:
+        results = search_index_with_connection(
+            connection, "Oliver Reed was an actor", top_k=5, operator="OR_FILTERED"
+        )
+    finally:
+        connection.close()
+
+    assert results
+    assert results[0]["page_id"] == "Target"
 
 
 def test_search_rejects_invalid_top_k(tmp_path: Path):
