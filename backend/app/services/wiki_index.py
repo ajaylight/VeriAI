@@ -12,10 +12,9 @@ from typing import Any, Iterable, Iterator
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
 DEFAULT_INDEX_PATH = PROJECT_ROOT / "data" / "index" / "fever_wiki_fts5.sqlite3"
+INDEX_SCHEMA_VERSION = "2"
 TOKEN_RE = re.compile(r"[\w]+", flags=re.UNICODE)
 
-# Common grammatical terms create very large OR match sets. Keep negation
-# and conjunctions because they can materially affect factual claims and names.
 SEARCH_STOPWORDS = {
     "a", "an", "the", "is", "was", "were", "are", "am", "be", "been", "being",
     "of", "in", "on", "at", "to", "for", "from", "by", "with", "as",
@@ -94,6 +93,10 @@ def create_index_schema(connection: sqlite3.Connection) -> None:
             "official Python 3.11 build or use a Python distribution with FTS5 enabled."
         ) from exc
     connection.execute("CREATE TABLE index_metadata (key TEXT PRIMARY KEY, value TEXT NOT NULL)")
+    connection.execute(
+        "INSERT INTO index_metadata(key, value) VALUES ('schema_version', ?)",
+        (INDEX_SCHEMA_VERSION,),
+    )
     connection.commit()
 
 
@@ -112,7 +115,7 @@ def open_index_connection(
     index_path: Path | None = None,
     timeout: int = 60,
 ) -> sqlite3.Connection:
-    """Open a reusable read connection with a larger page cache for batch evaluation."""
+    """Open a reusable read connection and reject obsolete index schemas."""
     path = index_path or DEFAULT_INDEX_PATH
     if not path.is_file():
         raise FileNotFoundError(
@@ -120,6 +123,23 @@ def open_index_connection(
         )
     connection = sqlite3.connect(str(path), timeout=timeout)
     connection.row_factory = sqlite3.Row
+    try:
+        version = connection.execute(
+            "SELECT value FROM index_metadata WHERE key = 'schema_version'"
+        ).fetchone()
+    except sqlite3.Error:
+        connection.close()
+        raise WikiIndexError(
+            "The Wikipedia index has no schema version. Rebuild it with "
+            "python -m app.scripts.build_fever_index --archive ..\\data\\fever\\wiki-pages.zip --overwrite."
+        )
+    if version is None or version["value"] != INDEX_SCHEMA_VERSION:
+        found = version["value"] if version is not None else "missing"
+        connection.close()
+        raise WikiIndexError(
+            f"Wikipedia index schema {found} is incompatible with required schema "
+            f"{INDEX_SCHEMA_VERSION}. Rebuild the index with --overwrite."
+        )
     connection.execute("PRAGMA cache_size=-100000")
     connection.execute("PRAGMA temp_store=MEMORY")
     return connection
@@ -195,8 +215,11 @@ def index_status(index_path: Path | None = None) -> dict[str, Any]:
         metadata = {}
     finally:
         connection.close()
+    schema_compatible = metadata.get("schema_version") == INDEX_SCHEMA_VERSION
     return {
-        "ready": bool(metadata.get("complete") == "true"),
+        "ready": bool(metadata.get("complete") == "true" and schema_compatible),
+        "schema_compatible": schema_compatible,
+        "required_schema_version": INDEX_SCHEMA_VERSION,
         "index_path": str(path),
         "size_bytes": path.stat().st_size,
         "metadata": metadata,
