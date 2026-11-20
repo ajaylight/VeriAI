@@ -1,12 +1,10 @@
 """Evaluate FEVER evidence retrieval against annotated Wikipedia sentence IDs.
 
 Run from the backend directory:
-    python -m app.scripts.evaluate_retrieval --split paper_dev --limit 500 --top-k 5 10
+    python -m app.scripts.evaluate_retrieval --split paper_dev --limit 50 --top-k 5 10 --match-mode or
 
-The evaluation excludes claims without annotated sentence evidence (normally
-NOT ENOUGH INFO). Recall is measured against the union of annotated gold
-sentences; complete evidence-set recall checks whether every sentence in at
-least one alternative gold evidence set was retrieved.
+Use --match-mode and to compare strict all-term matching against broad OR matching.
+The evaluator reuses one SQLite connection for the full batch.
 """
 from __future__ import annotations
 
@@ -19,7 +17,11 @@ from pathlib import Path
 from typing import Any
 
 from app.services.fever_loader import DEFAULT_FEVER_DIR, SPLIT_FILES, iter_jsonl
-from app.services.wiki_index import DEFAULT_INDEX_PATH, search_index
+from app.services.wiki_index import (
+    DEFAULT_INDEX_PATH,
+    open_index_connection,
+    search_index_with_connection,
+)
 
 EvidenceRef = tuple[str, int]
 EvidenceSet = set[EvidenceRef]
@@ -59,7 +61,7 @@ def aggregate_metrics(
     evaluated: list[tuple[list[EvidenceSet], list[EvidenceRef]]],
     k: int,
 ) -> dict[str, int | float]:
-    """Calculate micro sentence precision/recall and claim-level retrieval rates."""
+    """Calculate sentence-level precision/recall and claim-level retrieval rates."""
     if k < 1:
         raise ValueError("k must be at least 1")
     if not evaluated:
@@ -69,10 +71,15 @@ def aggregate_metrics(
     relevant_sentence_count = 0
     claim_hit_count = 0
     complete_evidence_set_count = 0
+    returned_count = 0
+    short_result_count = 0
 
     for gold_sets, retrieved in evaluated:
         gold_union: EvidenceSet = set().union(*gold_sets)
         retrieved_top_k = set(retrieved[:k])
+        returned_count += len(retrieved[:k])
+        if len(retrieved) < k:
+            short_result_count += 1
 
         gold_sentence_count += len(gold_union)
         relevant_sentence_count += len(gold_union.intersection(retrieved_top_k))
@@ -96,6 +103,8 @@ def aggregate_metrics(
         "complete_evidence_set_recall_at_k": complete_evidence_set_count / claim_count,
         "claims_with_any_gold_sentence_retrieved": claim_hit_count,
         "claims_with_a_complete_evidence_set_retrieved": complete_evidence_set_count,
+        "total_results_returned_at_k": returned_count,
+        "claims_returning_fewer_than_k_results": short_result_count,
     }
 
 
@@ -131,9 +140,12 @@ def run_evaluation(
     seed: int,
     top_ks: list[int],
     index_path: Path,
+    match_mode: str = "or",
 ) -> dict[str, Any]:
     if not top_ks or any(k < 1 or k > 20 for k in top_ks):
         raise ValueError("Each --top-k value must be between 1 and 20.")
+    if match_mode not in {"or", "and"}:
+        raise ValueError("match_mode must be 'or' or 'and'.")
     top_ks = sorted(set(top_ks))
 
     total_eligible, samples = load_evaluation_records(split, limit, seed)
@@ -150,24 +162,32 @@ def run_evaluation(
     evaluated: list[tuple[list[EvidenceSet], list[EvidenceRef]]] = []
     started = time.time()
 
-    for index, (record, gold_sets) in enumerate(samples, start=1):
-        try:
-            results = search_index(record["claim"], top_k=max_k, index_path=index_path)
-        except ValueError as exc:
-            # A rare claim containing no searchable 2+ character token cannot
-            # be sent to FTS5; count it as a retrieval miss instead of aborting.
-            if "searchable word" not in str(exc):
-                raise
-            results = []
+    # Reuse one open connection so SQLite's page cache remains warm across claims.
+    connection = open_index_connection(index_path)
+    try:
+        for index, (record, gold_sets) in enumerate(samples, start=1):
+            try:
+                results = search_index_with_connection(
+                    connection,
+                    record["claim"],
+                    top_k=max_k,
+                    operator=match_mode.upper(),
+                )
+            except ValueError as exc:
+                if "searchable word" not in str(exc):
+                    raise
+                results = []
 
-        retrieved = [
-            (item["page_id"], item["sentence_id"])
-            for item in results
-        ]
-        evaluated.append((gold_sets, retrieved))
+            retrieved = [
+                (item["page_id"], item["sentence_id"])
+                for item in results
+            ]
+            evaluated.append((gold_sets, retrieved))
 
-        if index % 100 == 0 or index == len(samples):
-            print(f"Evaluated {index:,}/{len(samples):,} claims...", flush=True)
+            if index % 25 == 0 or index == len(samples):
+                print(f"Evaluated {index:,}/{len(samples):,} claims...", flush=True)
+    finally:
+        connection.close()
 
     metrics = {
         str(k): aggregate_metrics(evaluated, k)
@@ -181,6 +201,7 @@ def run_evaluation(
         "evaluated_claims": len(samples),
         "sample_limit": limit,
         "random_seed": seed,
+        "match_mode": match_mode,
         "label_counts_in_sample": dict(sorted(label_counts.items())),
         "index_path": str(index_path),
         "elapsed_seconds": round(time.time() - started, 2),
@@ -196,8 +217,8 @@ def main() -> None:
     parser.add_argument(
         "--limit",
         type=int,
-        default=500,
-        help="Number of evidence-bearing claims to sample; use 0 for all eligible claims.",
+        default=50,
+        help="Number of evidence-bearing claims to sample; use 0 for all eligible records.",
     )
     parser.add_argument("--seed", type=int, default=42, help="Random sampling seed.")
     parser.add_argument(
@@ -206,6 +227,12 @@ def main() -> None:
         nargs="+",
         default=[5, 10],
         help="Retrieval cutoffs to evaluate (each between 1 and 20).",
+    )
+    parser.add_argument(
+        "--match-mode",
+        choices=["or", "and"],
+        default="or",
+        help="OR is broad matching; AND requires all query terms.",
     )
     parser.add_argument(
         "--index",
@@ -227,12 +254,14 @@ def main() -> None:
         seed=args.seed,
         top_ks=args.top_k,
         index_path=args.index,
+        match_mode=args.match_mode,
     )
 
     print("\nFEVER retrieval evaluation")
     print(f"Split: {report['split']}")
     print(f"Eligible evidence-bearing claims: {report['eligible_claims_in_split']:,}")
     print(f"Evaluated claims: {report['evaluated_claims']:,}")
+    print(f"Query mode: {report['match_mode'].upper()}")
     print(f"Sample labels: {report['label_counts_in_sample']}")
     print(f"Elapsed: {report['elapsed_seconds']:.2f} seconds")
     for cutoff, values in report["metrics"].items():
@@ -260,6 +289,10 @@ def main() -> None:
             f"{values['complete_evidence_set_recall_at_k'] * 100:.2f}% "
             f"({values['claims_with_a_complete_evidence_set_retrieved']}/"
             f"{values['claims']})"
+        )
+        print(
+            f"  Claims returning fewer than @{cutoff}: "
+            f"{values['claims_returning_fewer_than_k_results']}"
         )
 
     if args.output:
