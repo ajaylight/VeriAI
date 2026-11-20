@@ -1,7 +1,7 @@
 """Streaming FEVER Wikipedia indexing and BM25 search using SQLite FTS5.
 
 FTS5 stores one row per FEVER sentence. The Wikipedia archive can be read
-straight from ZIP without extracting the ~7 GB JSONL corpus to disk.
+straight from ZIP without extracting the whole JSONL corpus to disk.
 """
 from __future__ import annotations
 
@@ -151,6 +151,8 @@ def search_index(
     operator: str = "OR",
 ) -> list[dict[str, Any]]:
     """Open the index, perform one search, and close the connection."""
+    if not 1 <= top_k <= 20:
+        raise ValueError("top_k must be between 1 and 20")
     connection = open_index_connection(index_path)
     try:
         return search_index_with_connection(
