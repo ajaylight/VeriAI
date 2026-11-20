@@ -63,13 +63,27 @@ def normalize_page_title(value: str) -> str:
     return " ".join(re.findall(r"[\w]+", normalized.casefold(), flags=re.UNICODE))
 
 
+SUBJECT_BOUNDARY_WORDS = {
+    "is", "are", "was", "were", "has", "have", "had", "does", "do", "did",
+    "died", "wins", "won", "became", "becomes", "born", "lived", "serves",
+    "served", "founded", "helped", "plays", "played", "wrote", "released",
+    "started", "includes", "included", "contains", "consists", "affects",
+    "affect", "owns", "owned",
+}
+
+
 def extract_subject_title_candidates(query: str, max_terms: int = 5) -> list[str]:
-    """Generate longest-first title candidates from the claim's leading content words."""
+    """Generate longest-first title candidates from the leading subject phrase."""
     words = TITLE_TOKEN_RE.findall(query)
-    content_words = [
-        word for word in words
-        if normalize_page_title(word) and normalize_page_title(word) not in SEARCH_STOPWORDS
-    ][:max_terms]
+    content_words: list[str] = []
+    for word in words:
+        normalized = normalize_page_title(word)
+        if normalized in SUBJECT_BOUNDARY_WORDS and content_words:
+            break
+        if normalized and normalized not in SEARCH_STOPWORDS:
+            content_words.append(word)
+        if len(content_words) >= max_terms:
+            break
     return [
         " ".join(content_words[:length])
         for length in range(len(content_words), 0, -1)
