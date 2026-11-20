@@ -248,11 +248,28 @@ def _search_subject_page(
     except sqlite3.OperationalError:
         rows = []
 
-    # If no sentence in the page matches the claim wording, return its opening
-    # sentences as contextual evidence rather than losing the exact page match.
-    if not rows:
-        title_only_query = f"({title_filter})"
-        rows = connection.execute(
+    # Always include the page's opening sentence as high-value context, then
+    # fill remaining slots with the best claim-matching sentences from that page.
+    title_only_query = f"({title_filter})"
+    opening_rows = connection.execute(
+        "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
+        "bm25(sentences, 5.0, 0.0, 1.0) AS bm25_score "
+        "FROM sentences WHERE sentences MATCH ? AND page_id = ? "
+        "ORDER BY CAST(sentence_id AS INTEGER) LIMIT 1",
+        (title_only_query, page_id),
+    ).fetchall()
+
+    ordered_rows = list(opening_rows)
+    seen_sentence_ids = {row["sentence_id"] for row in opening_rows}
+    for row in rows:
+        if row["sentence_id"] not in seen_sentence_ids:
+            ordered_rows.append(row)
+            seen_sentence_ids.add(row["sentence_id"])
+        if len(ordered_rows) >= top_k:
+            break
+
+    if not ordered_rows:
+        ordered_rows = connection.execute(
             "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
             "bm25(sentences, 5.0, 0.0, 1.0) AS bm25_score "
             "FROM sentences WHERE sentences MATCH ? AND page_id = ? "
@@ -267,7 +284,7 @@ def _search_subject_page(
             "text": row["text"],
             "bm25_score": float(row["bm25_score"]),
         }
-        for row in rows
+        for row in ordered_rows[:top_k]
     ]
 
 
