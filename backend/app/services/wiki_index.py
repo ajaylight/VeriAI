@@ -167,7 +167,7 @@ def search_index_with_connection(
         rows = connection.execute(
             "SELECT page_id, CAST(sentence_id AS INTEGER) AS sentence_id, text, "
             "bm25(sentences, 5.0, 0.0, 1.0) AS bm25_score "
-            "FROM sentences WHERE sentences MATCH ? ORDER BY rank LIMIT ?",
+            "FROM sentences WHERE sentences MATCH ? ORDER BY bm25(sentences, 5.0, 0.0, 1.0) LIMIT ?",
             (fts_query, top_k),
         ).fetchall()
         return [
