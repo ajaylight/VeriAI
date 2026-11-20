@@ -329,7 +329,9 @@ def search_index_with_connection(
 
     subject_pages = _find_exact_subject_pages(connection, query)
     subject_results: list[dict[str, Any]] = []
-    per_page_limit = max(1, min(3, top_k))
+    # Search deeper within the subject page so specific annotated evidence
+    # is not excluded by an overly small per-page candidate cap.
+    per_page_limit = max(1, min(10, top_k))
     for page_id, title_terms in subject_pages:
         subject_results.extend(
             _search_subject_page(connection, page_id, title_terms, query, per_page_limit)
