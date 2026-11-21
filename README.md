@@ -79,7 +79,7 @@ Example verification body:
 }
 \`\`\`
 
-The verification endpoint retrieves evidence first, then evaluates each evidence sentence as the premise and the claim as the hypothesis. NLI entailment maps to \`SUPPORTS\`, contradiction maps to \`REFUTES\`, and neutral maps to \`NOT ENOUGH INFO\`. The current baseline chooses the strongest non-neutral evidence pair; if all retrieved pairs are neutral, it returns \`NOT ENOUGH INFO\`. This aggregation strategy must be evaluated and may be improved for multi-sentence evidence.
+The verification endpoint retrieves evidence first, then evaluates each evidence sentence as the premise and the claim as the hypothesis. NLI entailment maps to \`SUPPORTS\`, contradiction maps to \`REFUTES\`, and neutral maps to \`NOT ENOUGH INFO\`. The current baseline chooses the strongest non-neutral evidence pair; if all retrieved pairs are neutral, it returns \`NOT ENOUGH INFO\`. This aggregation strategy must be evaluated and may be improved for multi-sentence evidence. Returned confidence is an uncalibrated model softmax score, not a calibrated probability of factual correctness.
 
 ## Tests
 From \`backend/\`:
