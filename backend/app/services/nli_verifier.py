@@ -183,6 +183,7 @@ class NliVerifier:
             return {
                 "verdict": "NOT ENOUGH INFO",
                 "confidence": 0.0,
+                "confidence_note": "No model score is available because no evidence was retrieved.",
                 "decision_basis": "no_evidence_retrieved",
                 "model_name": self.model_name,
                 "device": self.device,
@@ -230,6 +231,7 @@ class NliVerifier:
         return {
             "verdict": verdict,
             "confidence": round(float(confidence), 6),
+            "confidence_note": "Uncalibrated softmax score for the selected evidence pair (or strongest neutral pair).",
             "decision_basis": decision_basis,
             "model_name": self.model_name,
             "device": self.device,
