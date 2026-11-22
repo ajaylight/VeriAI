@@ -77,11 +77,14 @@ def extract_subject_title_candidates(query: str, max_terms: int = 5) -> list[str
     words = TITLE_TOKEN_RE.findall(query)
     content_words: list[str] = []
     for word in words:
-        normalized = normalize_page_title(word)
+        # Treat possessive forms such as "Reed's" as the underlying title token
+        # ("Reed") so exact Wikipedia page matching still works.
+        title_word = re.sub(r"['’]s$", "", word, flags=re.IGNORECASE)
+        normalized = normalize_page_title(title_word)
         if normalized in SUBJECT_BOUNDARY_WORDS and content_words:
             break
         if normalized and normalized not in SEARCH_STOPWORDS:
-            content_words.append(word)
+            content_words.append(title_word)
         if len(content_words) >= max_terms:
             break
     return [
