@@ -14,6 +14,7 @@ from app.services.wiki_index import (
     search_index,
     search_index_with_connection,
     tokenize_query,
+    _is_disambiguation_page,
 )
 
 
@@ -370,3 +371,25 @@ def test_subject_page_returns_more_than_three_evidence_candidates(tmp_path: Path
 
     assert len(results) == 5
     assert all(item["page_id"] == "Sample_Town" for item in results)
+
+
+
+def test_disambiguation_page_check_uses_indexed_page_title_terms(tmp_path: Path):
+    db = tmp_path / "disambiguation-check.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Jewell", 0, "Jewell may refer to :"),
+        ("Jewell_-LRB-singer-RRB-", 0, "Jewell is an American R&B singer."),
+    ])
+    con.commit()
+    con.close()
+
+    connection = open_index_connection(db)
+    try:
+        assert _is_disambiguation_page(connection, "Jewell", ["jewell"])
+        assert not _is_disambiguation_page(
+            connection, "Jewell_-LRB-singer-RRB-", ["jewell"]
+        )
+    finally:
+        connection.close()
