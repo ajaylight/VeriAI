@@ -221,20 +221,24 @@ def test_unrelated_entity_contradictions_are_ignored_when_subject_page_exists():
             "text": "Chris played the role of Julius Caesar.",
         },
     ]
-    verifier = NliVerifier(
+    shawn_verifier = NliVerifier(
         predictor=FixedPredictor([
             {"entailment": 0.04, "neutral": 0.91, "contradiction": 0.05},
             {"entailment": 0.01, "neutral": 0.02, "contradiction": 0.97},
             {"entailment": 0.01, "neutral": 0.01, "contradiction": 0.98},
+        ])
+    )
+    connie_verifier = NliVerifier(
+        predictor=FixedPredictor([
             {"entailment": 0.02, "neutral": 0.92, "contradiction": 0.06},
             {"entailment": 0.01, "neutral": 0.10, "contradiction": 0.89},
         ])
     )
 
-    shawn = verifier.verify(
+    shawn = shawn_verifier.verify(
         "Shawn Carlson was born in May of 1960.", evidence[:3]
     )
-    connie = verifier.verify(
+    connie = connie_verifier.verify(
         "Connie Nielsen played the role of Julius Caesar.", evidence[3:]
     )
 
