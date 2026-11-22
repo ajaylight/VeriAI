@@ -190,3 +190,88 @@ def test_verification_status_does_not_load_model_weights():
     body = response.json()
     assert body["model_name"] == DEFAULT_NLI_MODEL
     assert body["loaded"] is False
+
+
+
+def test_unrelated_entity_contradictions_are_ignored_when_subject_page_exists():
+    evidence = [
+        {
+            "page_id": "Shawn_Carlson",
+            "sentence_id": 0,
+            "text": "Shawn Carlson was born in 1960.",
+        },
+        {
+            "page_id": "Linda_Carlson",
+            "sentence_id": 0,
+            "text": "Linda Carlson was born May 12, 1945.",
+        },
+        {
+            "page_id": "John_F._Carlson",
+            "sentence_id": 0,
+            "text": "John F. Carlson was born May 5, 1875.",
+        },
+        {
+            "page_id": "Connie_Nielsen",
+            "sentence_id": 0,
+            "text": "Connie Nielsen is a Danish actress.",
+        },
+        {
+            "page_id": "Chris_Stills",
+            "sentence_id": 36,
+            "text": "Chris played the role of Julius Caesar.",
+        },
+    ]
+    verifier = NliVerifier(
+        predictor=FixedPredictor([
+            {"entailment": 0.04, "neutral": 0.91, "contradiction": 0.05},
+            {"entailment": 0.01, "neutral": 0.02, "contradiction": 0.97},
+            {"entailment": 0.01, "neutral": 0.01, "contradiction": 0.98},
+            {"entailment": 0.02, "neutral": 0.92, "contradiction": 0.06},
+            {"entailment": 0.01, "neutral": 0.10, "contradiction": 0.89},
+        ])
+    )
+
+    shawn = verifier.verify(
+        "Shawn Carlson was born in May of 1960.", evidence[:3]
+    )
+    connie = verifier.verify(
+        "Connie Nielsen played the role of Julius Caesar.", evidence[3:]
+    )
+
+    assert shawn["verdict"] == "NOT ENOUGH INFO"
+    assert shawn["decision_basis"] == "unrelated_entity_contradictions_ignored"
+    assert shawn["evidence_scores"][1]["verdict_eligible"] is False
+    assert shawn["evidence_scores"][2]["verdict_eligible"] is False
+
+    assert connie["verdict"] == "NOT ENOUGH INFO"
+    assert connie["decision_basis"] == "unrelated_entity_contradictions_ignored"
+    assert connie["evidence_scores"][1]["verdict_eligible"] is False
+
+
+def test_external_contradiction_explicitly_naming_subject_remains_eligible():
+    evidence = [
+        {
+            "page_id": "Connie_Nielsen",
+            "sentence_id": 0,
+            "text": "Connie Nielsen is a Danish actress.",
+        },
+        {
+            "page_id": "Cast_Interview",
+            "sentence_id": 3,
+            "text": "Connie Nielsen did not play Julius Caesar.",
+        },
+    ]
+    verifier = NliVerifier(
+        predictor=FixedPredictor([
+            {"entailment": 0.02, "neutral": 0.92, "contradiction": 0.06},
+            {"entailment": 0.01, "neutral": 0.02, "contradiction": 0.97},
+        ])
+    )
+
+    result = verifier.verify(
+        "Connie Nielsen played the role of Julius Caesar.", evidence
+    )
+
+    assert result["verdict"] == "REFUTES"
+    assert result["decision_evidence"]["page_id"] == "Cast_Interview"
+    assert result["evidence_scores"][1]["verdict_eligible"] is True
