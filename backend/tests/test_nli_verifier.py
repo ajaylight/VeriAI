@@ -64,6 +64,8 @@ def test_neutral_maps_to_not_enough_info():
     assert result["verdict"] == "NOT ENOUGH INFO"
     assert result["confidence"] == 0.81
     assert result["selected_evidence"] is None
+    assert result["decision_evidence"] is None
+    assert result["evidence_selection_basis"] == "no_decisive_evidence_pair"
 
 
 def test_strongest_non_neutral_evidence_pair_decides_claim():
@@ -88,6 +90,31 @@ def test_strongest_non_neutral_evidence_pair_decides_claim():
     assert result["selected_evidence"]["page_id"] == "Other_Page"
 
 
+def test_selected_evidence_uses_retrieval_order_when_multiple_pairs_agree():
+    evidence = sample_evidence() + [
+        {
+            "page_id": "More_Confident_Page",
+            "sentence_id": 4,
+            "text": "A second supporting evidence sentence.",
+        }
+    ]
+    verifier = NliVerifier(
+        predictor=FixedPredictor([
+            {"entailment": 0.72, "neutral": 0.20, "contradiction": 0.08},
+            {"entailment": 0.99, "neutral": 0.005, "contradiction": 0.005},
+        ])
+    )
+
+    result = verifier.verify("The claim.", evidence)
+
+    assert result["verdict"] == "SUPPORTS"
+    assert result["confidence"] == 0.99
+    assert result["decision_evidence"]["page_id"] == "More_Confident_Page"
+    assert result["selected_evidence"]["page_id"] == "Example_Page"
+    assert result["evidence_selection_basis"] == (
+        "earliest_retrieved_pair_agreeing_with_verdict"
+    )
+
 def test_no_evidence_returns_not_enough_info_without_loading_model():
     predictor = FixedPredictor([])
     verifier = NliVerifier(predictor=predictor)
@@ -97,6 +124,8 @@ def test_no_evidence_returns_not_enough_info_without_loading_model():
     assert result["verdict"] == "NOT ENOUGH INFO"
     assert result["confidence"] == 0.0
     assert result["decision_basis"] == "no_evidence_retrieved"
+    assert result["selected_evidence"] is None
+    assert result["decision_evidence"] is None
     assert predictor.calls == 0
 
 
