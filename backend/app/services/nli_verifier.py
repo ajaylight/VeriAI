@@ -9,6 +9,8 @@ import os
 from importlib.util import find_spec
 from typing import Any, Callable, Mapping, Sequence
 
+from app.services.wiki_index import extract_subject_title_candidates, normalize_page_title
+
 DEFAULT_NLI_MODEL = "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli"
 NLI_LABELS = ("entailment", "neutral", "contradiction")
 VERDICT_BY_NLI = {
@@ -20,6 +22,36 @@ VERDICT_BY_NLI = {
 
 class NliModelError(RuntimeError):
     """Raised when the NLI model or its dependencies cannot be loaded."""
+
+
+def _claim_subject_title(claim: str) -> str:
+    """Return the normalized leading subject phrase when it can be extracted."""
+    candidates = extract_subject_title_candidates(claim)
+    return normalize_page_title(candidates[0]) if candidates else ""
+
+
+def _page_matches_subject(page_id: Any, subject_title: str) -> bool:
+    """Match an exact subject page, ignoring a FEVER disambiguation suffix."""
+    if not isinstance(page_id, str) or not subject_title:
+        return False
+    base_title = page_id.split("_-LRB-", 1)[0].replace("_", " ")
+    return normalize_page_title(base_title) == subject_title
+
+
+def _evidence_identifies_subject(
+    item: Mapping[str, Any],
+    clean_text: str,
+    subject_title: str,
+) -> bool:
+    """Check page identity or an explicit subject mention in the evidence record."""
+    if _page_matches_subject(item.get("page_id"), subject_title):
+        return True
+
+    # Retain FEVER link annotations for identity matching only. They are still
+    # stripped before the text is passed to the NLI model.
+    record_text = str(item.get("text", ""))
+    normalized_record = normalize_page_title(record_text)
+    return bool(subject_title and f" {subject_title} " in f" {normalized_record} ")
 
 
 class NliVerifier:
@@ -202,21 +234,47 @@ class NliVerifier:
         ]
         pair_probabilities = self._predict_probabilities(evidence_texts, claim)
 
+        # If retrieval found a page for the claim's exact leading subject,
+        # unrelated global BM25 matches must not independently refute that
+        # subject. An external sentence remains eligible when it explicitly
+        # names the subject (including FEVER's linked-entity annotations).
+        subject_title = _claim_subject_title(claim)
+        has_subject_page = bool(subject_title) and any(
+            _page_matches_subject(item.get("page_id"), subject_title)
+            for item in usable_evidence
+        )
+
         evidence_scores: list[dict[str, Any]] = []
         decisive_candidates: list[tuple[float, int, str]] = []
 
         for index, (item, probabilities) in enumerate(zip(usable_evidence, pair_probabilities)):
             predicted_relation = max(probabilities, key=probabilities.get)
             predicted_verdict = VERDICT_BY_NLI[predicted_relation]
+            subject_identified = _evidence_identifies_subject(
+                item, evidence_texts[index], subject_title
+            )
+            verdict_eligible = not (
+                has_subject_page
+                and predicted_relation == "contradiction"
+                and not subject_identified
+            )
             evidence_scores.append({
                 "page_id": item.get("page_id"),
                 "sentence_id": item.get("sentence_id"),
                 "text": evidence_texts[index],
                 "predicted_relation": predicted_relation,
                 "predicted_verdict": predicted_verdict,
+                "verdict_eligible": verdict_eligible,
+                "exclusion_reason": (
+                    "evidence_does_not_identify_claim_subject"
+                    if not verdict_eligible else None
+                ),
                 "probabilities": probabilities,
             })
-            if predicted_relation in {"entailment", "contradiction"}:
+            if (
+                verdict_eligible
+                and predicted_relation in {"entailment", "contradiction"}
+            ):
                 decisive_candidates.append((
                     probabilities[predicted_relation],
                     index,
@@ -236,7 +294,7 @@ class NliVerifier:
             selected_evidence = next(
                 (
                     item for item in evidence_scores
-                    if item["predicted_verdict"] == verdict
+                    if item["verdict_eligible"] and item["predicted_verdict"] == verdict
                 ),
                 decision_evidence,
             )
@@ -249,7 +307,16 @@ class NliVerifier:
                 (item["probabilities"]["neutral"] for item in evidence_scores),
                 default=0.0,
             )
-            decision_basis = "all_evidence_pairs_predicted_neutral"
+            excluded_contradictions = any(
+                item["predicted_relation"] == "contradiction"
+                and not item["verdict_eligible"]
+                for item in evidence_scores
+            )
+            decision_basis = (
+                "unrelated_entity_contradictions_ignored"
+                if excluded_contradictions
+                else "all_evidence_pairs_predicted_neutral"
+            )
             decision_evidence = None
             selected_evidence = None
             evidence_selection_basis = "no_decisive_evidence_pair"
