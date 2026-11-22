@@ -46,6 +46,14 @@ def test_title_candidate_extraction_keeps_subject_phrase():
         "Palo Alto California", "Palo Alto", "Palo"
     ]
 
+def test_title_candidate_extraction_normalizes_possessive_subject():
+    assert extract_subject_title_candidates("Oliver Reed's favorite color was purple.") == [
+        "Oliver Reed favorite color",
+        "Oliver Reed favorite",
+        "Oliver Reed",
+        "Oliver",
+    ]
+
 
 def test_page_title_normalization_handles_fever_parentheses_and_punctuation():
     assert normalize_page_title("Palo_Alto,_California") == "palo alto california"
@@ -167,6 +175,30 @@ def test_search_prioritizes_exact_subject_page_sentence(tmp_path: Path):
 
     assert results
     assert results[0]["page_id"] == "Vietnam"
+    assert results[0]["sentence_id"] == 0
+
+
+def test_search_resolves_possessive_full_name_to_exact_subject_page(tmp_path: Path):
+    db = tmp_path / "possessive-subject-page.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Oliver_Reed", 0, "Robert Oliver Reed was an English actor."),
+        ("Oliver", 0, "Oliver is a given name."),
+        ("Oliver!", 0, "Oliver is a musical."),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "Oliver Reed's favorite color was purple.",
+        top_k=5,
+        index_path=db,
+        operator="OR_FILTERED",
+    )
+
+    assert results
+    assert results[0]["page_id"] == "Oliver_Reed"
     assert results[0]["sentence_id"] == 0
 
 
