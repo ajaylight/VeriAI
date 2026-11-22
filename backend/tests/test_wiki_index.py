@@ -134,6 +134,19 @@ def test_reusable_connection_supports_filtered_or(tmp_path: Path):
     assert results[0]["page_id"] == "Target"
 
 
+
+
+def test_title_candidate_extraction_skips_leading_date_prefix():
+    candidates = extract_subject_title_candidates(
+        "On June 13th, 1986, Mary-Kate and Ashley Olsen were born."
+    )
+    assert candidates == [
+        "Mary-Kate and Ashley Olsen",
+        "Mary-Kate and Ashley",
+        "Mary-Kate and",
+        "Mary-Kate",
+    ]
+
 def test_page_title_is_searchable_and_boosted_over_unrelated_body_match(tmp_path: Path):
     db = tmp_path / "title-search.sqlite3"
     con = sqlite3.connect(db)
@@ -199,6 +212,58 @@ def test_search_resolves_possessive_full_name_to_exact_subject_page(tmp_path: Pa
 
     assert results
     assert results[0]["page_id"] == "Oliver_Reed"
+    assert results[0]["sentence_id"] == 0
+
+
+def test_search_skips_leading_date_and_prioritizes_olsen_subject_page(tmp_path: Path):
+    db = tmp_path / "date-prefix-subject.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("June", 0, "June is the sixth month of the year."),
+        (
+            "Mary-Kate_and_Ashley_Olsen",
+            0,
+            "Mary-Kate and Ashley Olsen were born on June 13, 1986.",
+        ),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "On June 13th, 1986, Mary-Kate and Ashley Olsen were born.",
+        top_k=5,
+        index_path=db,
+        operator="OR_FILTERED",
+    )
+
+    assert results
+    assert results[0]["page_id"] == "Mary-Kate_and_Ashley_Olsen"
+
+
+def test_search_resolves_disambiguation_page_to_specific_subject_title(tmp_path: Path):
+    db = tmp_path / "disambiguated-subject.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Jewell", 0, "Jewell may refer to :"),
+        ("Jewell_-LRB-singer-RRB-", 0, "Jewell is an American singer-songwriter."),
+        ("Jewell_-LRB-singer-RRB-", 1, "She sings country and pop music."),
+        ("Buddy_Jewell", 0, "Buddy Jewell is an American country music singer."),
+        ("Jewell_High_School", 0, "Jewell School is located in Oregon."),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "Jewell sings.",
+        top_k=5,
+        index_path=db,
+        operator="OR_FILTERED",
+    )
+
+    assert results
+    assert results[0]["page_id"] == "Jewell_-LRB-singer-RRB-"
     assert results[0]["sentence_id"] == 0
 
 
