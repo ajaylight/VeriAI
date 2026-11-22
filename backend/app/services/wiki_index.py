@@ -224,12 +224,29 @@ def _find_exact_subject_pages(
     return []
 
 
-def _is_disambiguation_page(connection: sqlite3.Connection, page_id: str) -> bool:
-    """Return whether the first sentence identifies a Wikipedia disambiguation page."""
+def _is_disambiguation_page(
+    connection: sqlite3.Connection,
+    page_id: str,
+    title_terms: list[str] | None = None,
+) -> bool:
+    """Check a page's first sentence using the FTS5 page-title index.
+
+    A plain equality lookup on page_id in the FTS5 virtual table can scan the
+    entire corpus. Constrain the query with indexed page_id terms first, then
+    retain exact page_id equality to avoid matching similarly named pages.
+    """
+    terms = title_terms or tokenize_query(page_id)
+    if not terms:
+        return False
+
+    page_filter = " AND ".join(
+        f'page_id : "{term.replace(chr(34), chr(34) * 2)}"'
+        for term in terms
+    )
     row = connection.execute(
-        "SELECT text FROM sentences WHERE page_id = ? "
+        "SELECT text FROM sentences WHERE sentences MATCH ? AND page_id = ? "
         "ORDER BY CAST(sentence_id AS INTEGER) LIMIT 1",
-        (page_id,),
+        (page_filter, page_id),
     ).fetchone()
     if row is None:
         return False
@@ -392,7 +409,7 @@ def search_index_with_connection(
     # is not excluded by an overly small per-page candidate cap.
     per_page_limit = max(1, min(10, top_k))
     for page_id, title_terms in subject_pages:
-        if _is_disambiguation_page(connection, page_id):
+        if _is_disambiguation_page(connection, page_id, title_terms):
             specific_pages = _find_disambiguated_subject_pages(
                 connection, query, title_terms
             )
