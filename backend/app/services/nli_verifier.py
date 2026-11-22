@@ -193,7 +193,13 @@ class NliVerifier:
                 "evidence_scores": [],
             }
 
-        evidence_texts = [str(item["text"]) for item in usable_evidence]
+        # FEVER wiki lines append tab-separated entity-link annotations after
+        # the natural-language sentence. Keep those annotations in the search
+        # index, but never feed them to the NLI model as part of the premise.
+        evidence_texts = [
+            str(item["text"]).partition("\\t")[0].strip()
+            for item in usable_evidence
+        ]
         pair_probabilities = self._predict_probabilities(evidence_texts, claim)
 
         evidence_scores: list[dict[str, Any]] = []
@@ -205,7 +211,7 @@ class NliVerifier:
             evidence_scores.append({
                 "page_id": item.get("page_id"),
                 "sentence_id": item.get("sentence_id"),
-                "text": item["text"],
+                "text": evidence_texts[index],
                 "predicted_relation": predicted_relation,
                 "predicted_verdict": predicted_verdict,
                 "probabilities": probabilities,
