@@ -68,7 +68,7 @@ def test_nli_receives_only_sentence_before_fever_link_annotations():
     evidence = [{
         "page_id": "Example_Page",
         "sentence_id": 0,
-        "text": "Robert Reed was an English actor.\\tEnglish\\tEngland\\tactor\\tactor",
+        "text": "Robert Reed was an English actor.\tEnglish\tEngland\tactor\tactor",
     }]
 
     result = verifier.verify("Robert Reed was an actor.", evidence)
