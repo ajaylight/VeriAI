@@ -52,6 +52,31 @@ def test_contradiction_maps_to_refutes():
     assert result["confidence"] == 0.90
 
 
+def test_nli_receives_only_sentence_before_fever_link_annotations():
+    class CapturingPredictor:
+        def __init__(self):
+            self.seen = None
+
+        def __call__(self, evidence_texts, claim):
+            self.seen = list(evidence_texts)
+            return [
+                {"entailment": 0.91, "neutral": 0.06, "contradiction": 0.03}
+            ]
+
+    predictor = CapturingPredictor()
+    verifier = NliVerifier(predictor=predictor)
+    evidence = [{
+        "page_id": "Example_Page",
+        "sentence_id": 0,
+        "text": "Robert Reed was an English actor.\\tEnglish\\tEngland\\tactor\\tactor",
+    }]
+
+    result = verifier.verify("Robert Reed was an actor.", evidence)
+
+    assert predictor.seen == ["Robert Reed was an English actor."]
+    assert result["selected_evidence"]["text"] == "Robert Reed was an English actor."
+
+
 def test_neutral_maps_to_not_enough_info():
     verifier = NliVerifier(
         predictor=FixedPredictor([
