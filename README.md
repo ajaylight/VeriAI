@@ -108,6 +108,7 @@ Keep retrieval metrics, NLI metrics and end-to-end verification metrics separate
 ## Current implementation status
 - Claim extraction: implemented.
 - FEVER JSONL inspection: implemented.
-- Full-corpus BM25 retrieval with title-aware subject-page prioritization: implemented.
-- Three-way NLI verifier and API integration: implemented; live model evaluation pending.
+- Full-corpus BM25 retrieval with title-aware subject-page prioritization, date-prefix handling, and predicate-guided recovery from disambiguation pages: implemented; regression coverage added.
+- End-to-end FEVER retrieval-plus-NLI evaluation tooling: implemented; initial stratified 30-claim benchmark completed, larger evaluation pending.
+- Three-way NLI verifier and API integration: implemented; initial live model evaluation completed.
 - Dense retrieval, end-to-end evaluation and frontend: future milestones.
