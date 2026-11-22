@@ -226,6 +226,55 @@ def _find_exact_subject_pages(
     return []
 
 
+def _is_disambiguation_page(connection: sqlite3.Connection, page_id: str) -> bool:
+    """Return whether the first sentence identifies a Wikipedia disambiguation page."""
+    row = connection.execute(
+        "SELECT text FROM sentences WHERE page_id = ? "
+        "ORDER BY CAST(sentence_id AS INTEGER) LIMIT 1",
+        (page_id,),
+    ).fetchone()
+    if row is None:
+        return False
+    first_sentence = str(row["text"]).casefold()
+    return "may refer to" in first_sentence or "disambiguation page" in first_sentence
+
+
+def _find_disambiguated_subject_pages(
+    connection: sqlite3.Connection,
+    query: str,
+    subject_terms: list[str],
+    limit: int = 10,
+) -> list[str]:
+    """Find specific page titles sharing a subject and a predicate-related title token."""
+    subject_filter = " AND ".join(
+        f'page_id : "{term.replace(chr(34), chr(34) * 2)}"'
+        for term in subject_terms
+    )
+    query_terms = filter_query_terms(tokenize_query(query))
+    subject_set = set(subject_terms)
+    predicate_terms = [term for term in query_terms if term not in subject_set]
+    prefixes: list[str] = []
+    for term in predicate_terms:
+        normalized = term.casefold()
+        if len(normalized) > 5 and normalized.endswith("ing"):
+            normalized = normalized[:-3]
+        elif len(normalized) > 4 and normalized.endswith("s"):
+            normalized = normalized[:-1]
+        if len(normalized) >= 3 and normalized not in prefixes:
+            prefixes.append(normalized)
+    if not prefixes:
+        return []
+    predicate_filter = " OR ".join(
+        f'page_id : "{term.replace(chr(34), chr(34) * 2)}"*'
+        for term in prefixes
+    )
+    match_query = f"({subject_filter}) AND ({predicate_filter})"
+    rows = connection.execute(
+        "SELECT DISTINCT page_id FROM sentences WHERE sentences MATCH ? LIMIT ?",
+        (match_query, limit),
+    ).fetchall()
+    return [str(row["page_id"]) for row in rows]
+
 def _search_subject_page(
     connection: sqlite3.Connection,
     page_id: str,
@@ -345,6 +394,18 @@ def search_index_with_connection(
     # is not excluded by an overly small per-page candidate cap.
     per_page_limit = max(1, min(10, top_k))
     for page_id, title_terms in subject_pages:
+        if _is_disambiguation_page(connection, page_id):
+            specific_pages = _find_disambiguated_subject_pages(
+                connection, query, title_terms
+            )
+            if specific_pages:
+                for specific_page_id in specific_pages:
+                    subject_results.extend(
+                        _search_subject_page(
+                            connection, specific_page_id, title_terms, query, per_page_limit
+                        )
+                    )
+                continue
         subject_results.extend(
             _search_subject_page(connection, page_id, title_terms, query, per_page_limit)
         )
