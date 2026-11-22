@@ -16,6 +16,12 @@ DEFAULT_INDEX_PATH = PROJECT_ROOT / "data" / "index" / "fever_wiki_fts5.sqlite3"
 INDEX_SCHEMA_VERSION = "2"
 TOKEN_RE = re.compile(r"[\w]+", flags=re.UNICODE)
 TITLE_TOKEN_RE = re.compile(r"[^\W_]+(?:[.'’&-][^\W_]+)*", flags=re.UNICODE)
+DATE_PREFIX_RE = re.compile(
+    r"^\\s*(?:on\\s+)?(?:january|february|march|april|may|june|july|august|
+    r"september|october|november|december)\\s+\\d{1,2}(?:st|nd|rd|th)?
+    r"(?:,\\s*|\\s+)\\d{4}\\s*[,;:]\\s*",
+    flags=re.IGNORECASE,
+)
 
 SEARCH_STOPWORDS = {
     "a", "an", "the", "is", "was", "were", "are", "am", "be", "been", "being",
@@ -74,7 +80,10 @@ SUBJECT_BOUNDARY_WORDS = {
 
 def extract_subject_title_candidates(query: str, max_terms: int = 5) -> list[str]:
     """Generate longest-first title candidates from the leading subject phrase."""
-    words = TITLE_TOKEN_RE.findall(query)
+    # Claims can begin with a date adjunct ("On June 13th, 1986, ...").
+    # Remove that prefix before guessing the leading subject page title.
+    subject_query = DATE_PREFIX_RE.sub("", query, count=1)
+    words = TITLE_TOKEN_RE.findall(subject_query)
     content_words: list[str] = []
     for word in words:
         # Treat possessive forms such as "Reed's" as the underlying title token
