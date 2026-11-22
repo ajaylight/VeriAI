@@ -17,9 +17,9 @@ INDEX_SCHEMA_VERSION = "2"
 TOKEN_RE = re.compile(r"[\w]+", flags=re.UNICODE)
 TITLE_TOKEN_RE = re.compile(r"[^\W_]+(?:[.'’&-][^\W_]+)*", flags=re.UNICODE)
 DATE_PREFIX_RE = re.compile(
-    r"^\\s*(?:on\\s+)?(?:january|february|march|april|may|june|july|august|
-    r"september|october|november|december)\\s+\\d{1,2}(?:st|nd|rd|th)?
-    r"(?:,\\s*|\\s+)\\d{4}\\s*[,;:]\\s*",
+    r"^\s*(?:on\s+)?(?:january|february|march|april|may|june|july|august|
+    r"september|october|november|december)\s+\d{1,2}(?:st|nd|rd|th)?
+    r"(?:,\s*|\s+)\d{4}\s*[,;:]\s*",
     flags=re.IGNORECASE,
 )
 
