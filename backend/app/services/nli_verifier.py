@@ -197,7 +197,7 @@ class NliVerifier:
         # the natural-language sentence. Keep those annotations in the search
         # index, but never feed them to the NLI model as part of the premise.
         evidence_texts = [
-            str(item["text"]).partition("\\t")[0].strip()
+            str(item["text"]).partition("\t")[0].strip()
             for item in usable_evidence
         ]
         pair_probabilities = self._predict_probabilities(evidence_texts, claim)
