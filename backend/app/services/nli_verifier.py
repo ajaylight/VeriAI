@@ -185,6 +185,9 @@ class NliVerifier:
                 "confidence": 0.0,
                 "confidence_note": "No model score is available because no evidence was retrieved.",
                 "decision_basis": "no_evidence_retrieved",
+                "evidence_selection_basis": "no_evidence_retrieved",
+                "decision_evidence": None,
+                "selected_evidence": None,
                 "model_name": self.model_name,
                 "device": self.device,
                 "evidence_scores": [],
@@ -218,7 +221,22 @@ class NliVerifier:
             confidence, winning_index, winning_relation = max(decisive_candidates)
             verdict = VERDICT_BY_NLI[winning_relation]
             decision_basis = "strongest_non_neutral_evidence_pair"
-            selected_evidence = evidence_scores[winning_index]
+            decision_evidence = evidence_scores[winning_index]
+
+            # Keep verdict aggregation based on the strongest NLI pair, but
+            # choose the earliest retrieved pair with the same verdict as
+            # the user-facing citation. Retrieval order is the relevance ranking
+            # supplied by the subject-page/BM25 pipeline.
+            selected_evidence = next(
+                (
+                    item for item in evidence_scores
+                    if item["predicted_verdict"] == verdict
+                ),
+                decision_evidence,
+            )
+            evidence_selection_basis = (
+                "earliest_retrieved_pair_agreeing_with_verdict"
+            )
         else:
             verdict = "NOT ENOUGH INFO"
             confidence = max(
@@ -226,15 +244,22 @@ class NliVerifier:
                 default=0.0,
             )
             decision_basis = "all_evidence_pairs_predicted_neutral"
+            decision_evidence = None
             selected_evidence = None
+            evidence_selection_basis = "no_decisive_evidence_pair"
 
         return {
             "verdict": verdict,
             "confidence": round(float(confidence), 6),
-            "confidence_note": "Uncalibrated softmax score for the selected evidence pair (or strongest neutral pair).",
+            "confidence_note": (
+                "Uncalibrated softmax score for the strongest decisive pair "
+                "(or strongest neutral pair); not a calibrated probability."
+            ),
             "decision_basis": decision_basis,
+            "evidence_selection_basis": evidence_selection_basis,
             "model_name": self.model_name,
             "device": self.device,
+            "decision_evidence": decision_evidence,
             "selected_evidence": selected_evidence,
             "evidence_scores": evidence_scores,
         }
