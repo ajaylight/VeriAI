@@ -393,3 +393,53 @@ def test_disambiguation_page_check_uses_indexed_page_title_terms(tmp_path: Path)
         )
     finally:
         connection.close()
+
+
+
+def test_title_candidates_preserve_stopwords_in_exact_page_titles():
+    assert extract_subject_title_candidates(
+        "The Cincinnati Kid stars Steve McQueen."
+    )[:3] == [
+        "The Cincinnati Kid",
+        "The Cincinnati",
+        "The",
+    ]
+    assert extract_subject_title_candidates(
+        "Highway to Heaven is a drama series."
+    )[0] == "Highway to Heaven"
+    assert extract_subject_title_candidates(
+        "The King and I is based on a novel."
+    )[0] == "The King and I"
+    assert extract_subject_title_candidates(
+        "How to Train Your Dragon 2 used scalable multicore processing."
+    )[0] == "How to Train Your Dragon 2"
+
+
+def test_search_prioritizes_exact_title_with_stopwords(tmp_path: Path):
+    db = tmp_path / "stopword-title-search.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        (
+            "The_Cincinnati_Kid",
+            0,
+            "The Cincinnati Kid is a film starring Steve McQueen.",
+        ),
+        (
+            "Cincinnati",
+            0,
+            "Cincinnati is a city in Ohio.",
+        ),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "The Cincinnati Kid stars Steve McQueen.",
+        top_k=5,
+        index_path=db,
+        operator="OR_FILTERED",
+    )
+
+    assert results
+    assert results[0]["page_id"] == "The_Cincinnati_Kid"
