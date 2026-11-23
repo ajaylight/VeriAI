@@ -117,6 +117,14 @@ def load_evaluation_records(
     total_eligible = len(records)
     excluded = excluded_ids or set()
     if excluded:
+        available_ids = {str(record.get("id")) for record in records}
+        missing_ids = excluded - available_ids
+        if missing_ids:
+            preview = ", ".join(sorted(missing_ids)[:5])
+            raise ValueError(
+                "Exclusion report contains claim IDs not found in this split: "
+                f"{preview}"
+            )
         records = [
             record for record in records
             if str(record.get("id")) not in excluded
