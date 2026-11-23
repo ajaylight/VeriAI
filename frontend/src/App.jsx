@@ -182,6 +182,18 @@ export default function App() {
       }
 
       setResult(payload);
+
+      // Verification can lazily load the NLI model. Refresh the header status
+      // after the request so it reflects the model's current state.
+      try {
+        const statusResponse = await fetch(`${API_BASE}/verification/status`);
+        if (statusResponse.ok) {
+          const modelStatus = await statusResponse.json();
+          setModelState(modelStatus.loaded ? "loaded" : "not-loaded");
+        }
+      } catch {
+        setModelState("unknown");
+      }
     } catch (requestError) {
       setError(
         requestError instanceof TypeError
