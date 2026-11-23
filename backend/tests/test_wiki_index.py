@@ -396,14 +396,19 @@ def test_disambiguation_page_check_uses_indexed_page_title_terms(tmp_path: Path)
 
 
 
-def test_title_candidates_preserve_stopwords_in_exact_page_titles():
-    assert extract_subject_title_candidates(
+def test_title_candidates_preserve_stopwords_and_prioritize_meaningful_phrases():
+    cincinnati = extract_subject_title_candidates(
         "The Cincinnati Kid stars Steve McQueen."
-    )[:3] == [
-        "The Cincinnati Kid",
-        "The Cincinnati",
-        "The",
-    ]
+    )
+    assert cincinnati[0] == "The Cincinnati Kid"
+    assert cincinnati.index("Cincinnati Kid") < cincinnati.index("The Cincinnati")
+
+    greek = extract_subject_title_candidates(
+        "The Greek language is spoken in the Mediterranean."
+    )
+    assert greek[0] == "The Greek language"
+    assert greek.index("Greek language") < greek.index("The Greek")
+
     assert extract_subject_title_candidates(
         "Highway to Heaven is a drama series."
     )[0] == "Highway to Heaven"
@@ -443,3 +448,61 @@ def test_search_prioritizes_exact_title_with_stopwords(tmp_path: Path):
 
     assert results
     assert results[0]["page_id"] == "The_Cincinnati_Kid"
+
+
+def test_search_prefers_greek_language_over_the_greek_page(tmp_path: Path):
+    db = tmp_path / "greek-language-title-search.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("The_Greek", 0, "The Greek is a fictional character in a television drama."),
+        ("Greek_language", 0, "Greek is an Indo-European language."),
+        ("Greek_language", 11, "Greek is spoken in Greece and Cyprus."),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "The Greek language is spoken in the Mediterranean.",
+        top_k=5,
+        index_path=db,
+        operator="OR_FILTERED",
+    )
+
+    assert results
+    assert results[0]["page_id"] == "Greek_language"
+
+
+def test_unresolved_disambiguation_does_not_select_arbitrary_variant(tmp_path: Path):
+    db = tmp_path / "unresolved-title-disambiguation.sqlite3"
+    con = sqlite3.connect(db)
+    create_index_schema(con)
+    insert_sentence_batch(con, [
+        ("Home_for_the_Holidays", 0, "Home for the Holidays may refer to :"),
+        (
+            "Home_for_the_Holidays_-LRB-1995_film-RRB-",
+            0,
+            "Home for the Holidays is a 1995 American comedy-drama film directed by Jodie Foster.",
+        ),
+        (
+            "Home_for_the_Holidays_-LRB-Anthony_Hamilton_album-RRB-",
+            0,
+            "Home for the Holidays is an album by American recording artist Anthony Hamilton.",
+        ),
+    ])
+    con.commit()
+    con.close()
+
+    results = search_index(
+        "Home for the Holidays stars an American director.",
+        top_k=5,
+        index_path=db,
+        operator="OR_FILTERED",
+    )
+
+    assert results
+    assert results[0]["page_id"] == "Home_for_the_Holidays"
+    assert all(
+        "_-LRB-" not in item["page_id"]
+        for item in results
+    )
