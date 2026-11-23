@@ -1,0 +1,4454 @@
+{
+  "evaluation_type": "end_to_end_retrieval_plus_nli",
+  "split": "paper_dev",
+  "dataset_file": "paper_dev.jsonl",
+  "eligible_labelled_claims_in_split": 9999,
+  "evaluated_claims": 30,
+  "sample_limit": 30,
+  "random_seed": 42,
+  "sampling": "seeded_stratified_by_label",
+  "top_k": 5,
+  "retrieval_mode": "OR_FILTERED",
+  "label_counts_in_sample": {
+    "NOT ENOUGH INFO": 10,
+    "REFUTES": 10,
+    "SUPPORTS": 10
+  },
+  "model_name": "MoritzLaurer/DeBERTa-v3-base-mnli-fever-anli",
+  "device": "cpu",
+  "model_loaded": true,
+  "elapsed_seconds": 106.38,
+  "seconds_per_claim": 3.546,
+  "classification_metrics": {
+    "claims": 30,
+    "accuracy": 0.8,
+    "macro_precision": 0.7944444444444444,
+    "macro_recall": 0.7999999999999999,
+    "macro_f1": 0.791919191919192,
+    "per_class": {
+      "SUPPORTS": {
+        "precision": 0.8,
+        "recall": 0.8,
+        "f1": 0.8000000000000002,
+        "support": 10
+      },
+      "REFUTES": {
+        "precision": 0.8333333333333334,
+        "recall": 1.0,
+        "f1": 0.9090909090909091,
+        "support": 10
+      },
+      "NOT ENOUGH INFO": {
+        "precision": 0.75,
+        "recall": 0.6,
+        "f1": 0.6666666666666665,
+        "support": 10
+      }
+    },
+    "confusion_matrix": {
+      "SUPPORTS": {
+        "SUPPORTS": 8,
+        "REFUTES": 0,
+        "NOT ENOUGH INFO": 2
+      },
+      "REFUTES": {
+        "SUPPORTS": 0,
+        "REFUTES": 10,
+        "NOT ENOUGH INFO": 0
+      },
+      "NOT ENOUGH INFO": {
+        "SUPPORTS": 2,
+        "REFUTES": 2,
+        "NOT ENOUGH INFO": 6
+      }
+    }
+  },
+  "retrieval_metrics_on_evidence_bearing_claims": {
+    "claims": 20,
+    "gold_sentence_references": 37,
+    "retrieved_gold_sentence_references": 20,
+    "precision_at_k": 0.2,
+    "sentence_recall_at_k": 0.5405405405405406,
+    "claim_hit_rate_at_k": 0.9,
+    "complete_evidence_set_recall_at_k": 0.85,
+    "claims_with_any_gold_sentence_retrieved": 18,
+    "claims_with_a_complete_evidence_set_retrieved": 17,
+    "total_results_returned_at_k": 100,
+    "claims_returning_fewer_than_k_results": 0
+  },
+  "retrieval_evaluated_claims": 20,
+  "claim_details": [
+    {
+      "id": 46726,
+      "claim": "Chaka Khan has released at least five studio albums.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "SUPPORTS",
+      "correct": false,
+      "confidence": 0.651065,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Chaka_Khan",
+        "sentence_id": 6,
+        "text": "With Rufus , she achieved four gold singles , four gold albums , and two platinum albums .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.6510645747184753,
+          "neutral": 0.32609793543815613,
+          "contradiction": 0.02283756621181965
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Chaka_Khan",
+        "sentence_id": 6,
+        "text": "With Rufus , she achieved four gold singles , four gold albums , and two platinum albums .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.6510645747184753,
+          "neutral": 0.32609793543815613,
+          "contradiction": 0.02283756621181965
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 0,
+          "text": "Chaka Khan -LRB- born Yvette Marie Stevens , March 23 , 1953 -RRB- is an American recording artist whose career has spanned five decades , beginning in the 1970s as the frontwoman and focal point of the funk band Rufus .\tfunk\tfunk\tRufus\tRufus (band)\tfrontwoman\tFrontman",
+          "bm25_score": -31.06778918176652
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 6,
+          "text": "With Rufus , she achieved four gold singles , four gold albums , and two platinum albums .\tRufus\tRufus (band)\tgold\tgold record",
+          "bm25_score": -43.85167193131311
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 2,
+          "text": "Khan was ranked at number 17 in VH1 's original list of the 100 Greatest Women of Rock & Roll .",
+          "bm25_score": -43.15955677735629
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 5,
+          "text": "In the course of her solo career , Khan has achieved three gold singles , three gold albums and one platinum album with I Feel for You .\tI Feel for You\tI Feel for You (album)\tgold\tgold record\tplatinum album\tplatinum record",
+          "bm25_score": -42.339057061402094
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 1,
+          "text": "Widely known as the Queen of Funk , Khan has won ten Grammys and has sold an estimated 70 million records worldwide .\tQueen of Funk\tHonorific nicknames in popular music",
+          "bm25_score": -40.27033696047154
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 0,
+          "text": "Chaka Khan -LRB- born Yvette Marie Stevens , March 23 , 1953 -RRB- is an American recording artist whose career has spanned five decades , beginning in the 1970s as the frontwoman and focal point of the funk band Rufus .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.4103180766105652,
+            "neutral": 0.5816307067871094,
+            "contradiction": 0.008051296696066856
+          }
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 6,
+          "text": "With Rufus , she achieved four gold singles , four gold albums , and two platinum albums .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.6510645747184753,
+            "neutral": 0.32609793543815613,
+            "contradiction": 0.02283756621181965
+          }
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 2,
+          "text": "Khan was ranked at number 17 in VH1 's original list of the 100 Greatest Women of Rock & Roll .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.14201180636882782,
+            "neutral": 0.8528715968132019,
+            "contradiction": 0.005116582848131657
+          }
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 5,
+          "text": "In the course of her solo career , Khan has achieved three gold singles , three gold albums and one platinum album with I Feel for You .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.3081752061843872,
+            "neutral": 0.6497971415519714,
+            "contradiction": 0.04202767834067345
+          }
+        },
+        {
+          "page_id": "Chaka_Khan",
+          "sentence_id": 1,
+          "text": "Widely known as the Queen of Funk , Khan has won ten Grammys and has sold an estimated 70 million records worldwide .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.529867947101593,
+            "neutral": 0.46094438433647156,
+            "contradiction": 0.009187646210193634
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 180735,
+      "claim": "Victoria (Dance Exponents song) reached Number 6 on the singles chart.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": false,
+      "confidence": 0.974817,
+      "decision_basis": "all_evidence_pairs_predicted_neutral",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Victoria_-LRB-Dance_Exponents_song-RRB-",
+          "sentence_id": 0,
+          "text": "`` Victoria '' is a song by New Zealand rock band The Exponents from their 1982 album Prayers Be Answered and their debut single .\tPrayers Be Answered\tPrayers Be Answered\tNew Zealand\tNew Zealand\tThe Exponents\tThe Exponents",
+          "bm25_score": -54.33344243944473
+        },
+        {
+          "page_id": "Victoria_-LRB-Dance_Exponents_song-RRB-",
+          "sentence_id": 1,
+          "text": "Released in 1982 it reached Number 6 on the New Zealand singles chart .\tNew Zealand\tNew Zealand",
+          "bm25_score": -84.1669911221099
+        },
+        {
+          "page_id": "Victoria_-LRB-Dance_Exponents_song-RRB-",
+          "sentence_id": 2,
+          "text": "The song was selected by a panel of New Zealand songwriters to have been the # 8 top 100 New Zealand songs of all time .\tNew Zealand\tNew Zealand",
+          "bm25_score": -60.6438765824403
+        },
+        {
+          "page_id": "List_of_UK_Dance_Singles_Chart_number_ones_of_2007",
+          "sentence_id": 3,
+          "text": "These are the song which reached number one on the UK Dance Singles Chart in 2007 .",
+          "bm25_score": -52.091222488564995
+        },
+        {
+          "page_id": "List_of_UK_Dance_Singles_Chart_number_ones_of_2006",
+          "sentence_id": 2,
+          "text": "During the year , 31 singles reached number one .",
+          "bm25_score": -49.52005170651745
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Victoria_-LRB-Dance_Exponents_song-RRB-",
+          "sentence_id": 0,
+          "text": "`` Victoria '' is a song by New Zealand rock band The Exponents from their 1982 album Prayers Be Answered and their debut single .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.019532712176442146,
+            "neutral": 0.9633352756500244,
+            "contradiction": 0.01713191345334053
+          }
+        },
+        {
+          "page_id": "Victoria_-LRB-Dance_Exponents_song-RRB-",
+          "sentence_id": 1,
+          "text": "Released in 1982 it reached Number 6 on the New Zealand singles chart .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.3632837235927582,
+            "neutral": 0.6288454532623291,
+            "contradiction": 0.007870807312428951
+          }
+        },
+        {
+          "page_id": "Victoria_-LRB-Dance_Exponents_song-RRB-",
+          "sentence_id": 2,
+          "text": "The song was selected by a panel of New Zealand songwriters to have been the # 8 top 100 New Zealand songs of all time .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.012163963168859482,
+            "neutral": 0.9748173952102661,
+            "contradiction": 0.013018596917390823
+          }
+        },
+        {
+          "page_id": "List_of_UK_Dance_Singles_Chart_number_ones_of_2007",
+          "sentence_id": 3,
+          "text": "These are the song which reached number one on the UK Dance Singles Chart in 2007 .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.005999624729156494,
+            "neutral": 0.7322334051132202,
+            "contradiction": 0.2617669403553009
+          }
+        },
+        {
+          "page_id": "List_of_UK_Dance_Singles_Chart_number_ones_of_2006",
+          "sentence_id": 2,
+          "text": "During the year , 31 singles reached number one .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.005760110914707184,
+            "neutral": 0.9607590436935425,
+            "contradiction": 0.03348086401820183
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Victoria_-LRB-Dance_Exponents_song-RRB-",
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 132420,
+      "claim": "Kesha has only ever eaten hot dogs competitively for a living.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.94337,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Kesha",
+        "sentence_id": 4,
+        "text": "Kesha 's music and image propelled her to immediate commercial success , with Animal debuting as the number-one album in the United States .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.001250227796845138,
+          "neutral": 0.05537954345345497,
+          "contradiction": 0.9433701634407043
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Kesha",
+        "sentence_id": 4,
+        "text": "Kesha 's music and image propelled her to immediate commercial success , with Animal debuting as the number-one album in the United States .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.001250227796845138,
+          "neutral": 0.05537954345345497,
+          "contradiction": 0.9433701634407043
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Kesha",
+          "sentence_id": 0,
+          "text": "Kesha Rose Sebert -LRB- -LSB- \u02c8k\u025b\u0283\u0259_ro\u028az_\u02c8s\u025bb\u0259rt -RSB- ; born March 1 , 1987 ; formerly stylized as Ke $ ha -RRB- is an American singer , songwriter , and rapper .",
+          "bm25_score": -20.94592454492533
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 4,
+          "text": "Kesha 's music and image propelled her to immediate commercial success , with Animal debuting as the number-one album in the United States .\tAnimal\tAnimal (Kesha album)",
+          "bm25_score": -36.674174841985845
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 7,
+          "text": "Warrior , her second studio album , was released in 2012 , spawning her eighth top-ten single `` Die Young '' .\tWarrior\tWarrior (Kesha album)\tDie Young\tDie Young (Kesha song)",
+          "bm25_score": -36.674174841985845
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 11,
+          "text": "Kesha has been involved with animal rights and LGBT activism .\tanimal rights\tanimal rights\tLGBT\tLGBT",
+          "bm25_score": -35.81172717069748
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 17,
+          "text": "Kesha alleged physical and emotional abuse and employment discrimination against Dr. Luke , while Dr. Luke claims breach of contract and defamation against Kesha .\tDr. Luke\tDr. Luke\tbreach of contract\tbreach of contract",
+          "bm25_score": -35.15643697082619
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Kesha",
+          "sentence_id": 0,
+          "text": "Kesha Rose Sebert -LRB- -LSB- \u02c8k\u025b\u0283\u0259_ro\u028az_\u02c8s\u025bb\u0259rt -RSB- ; born March 1 , 1987 ; formerly stylized as Ke $ ha -RRB- is an American singer , songwriter , and rapper .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.00479149678722024,
+            "neutral": 0.5993499755859375,
+            "contradiction": 0.395858496427536
+          }
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 4,
+          "text": "Kesha 's music and image propelled her to immediate commercial success , with Animal debuting as the number-one album in the United States .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.001250227796845138,
+            "neutral": 0.05537954345345497,
+            "contradiction": 0.9433701634407043
+          }
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 7,
+          "text": "Warrior , her second studio album , was released in 2012 , spawning her eighth top-ten single `` Die Young '' .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0025275759398937225,
+            "neutral": 0.5014992356300354,
+            "contradiction": 0.4959731698036194
+          }
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 11,
+          "text": "Kesha has been involved with animal rights and LGBT activism .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0009086485952138901,
+            "neutral": 0.07330285012722015,
+            "contradiction": 0.9257884621620178
+          }
+        },
+        {
+          "page_id": "Kesha",
+          "sentence_id": 17,
+          "text": "Kesha alleged physical and emotional abuse and employment discrimination against Dr. Luke , while Dr. Luke claims breach of contract and defamation against Kesha .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0007438077009283006,
+            "neutral": 0.10555233806371689,
+            "contradiction": 0.893703818321228
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Kesha",
+            0
+          ]
+        ],
+        [
+          [
+            "Kesha",
+            13
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 65625,
+      "claim": "Jewell sings.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.996459,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Jewell_-LRB-singer-RRB-",
+        "sentence_id": 0,
+        "text": "Jewell -LRB- a.k.a. Ju-L , born Jewell Caples , June 15 , 1968 ; later Jewell Peyton -RRB- is an R&B singer who was signed to Death Row Records from 1992 to 1996 .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9964593052864075,
+          "neutral": 0.00301322597078979,
+          "contradiction": 0.0005274155410006642
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Jewell_-LRB-singer-RRB-",
+        "sentence_id": 0,
+        "text": "Jewell -LRB- a.k.a. Ju-L , born Jewell Caples , June 15 , 1968 ; later Jewell Peyton -RRB- is an R&B singer who was signed to Death Row Records from 1992 to 1996 .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9964593052864075,
+          "neutral": 0.00301322597078979,
+          "contradiction": 0.0005274155410006642
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Jewell_-LRB-singer-RRB-",
+          "sentence_id": 0,
+          "text": "Jewell -LRB- a.k.a. Ju-L , born Jewell Caples , June 15 , 1968 ; later Jewell Peyton -RRB- is an R&B singer who was signed to Death Row Records from 1992 to 1996 .\tR&B\tContemporary R&B\tDeath Row Records\tDeath Row Records",
+          "bm25_score": -16.790655901934223
+        },
+        {
+          "page_id": "Fred_Jewell",
+          "sentence_id": 3,
+          "text": "Fred Jewell",
+          "bm25_score": -20.583910654735778
+        },
+        {
+          "page_id": "Jewell_High_School",
+          "sentence_id": 5,
+          "text": "Jewell School , Jewell , Oregon\tJewell School\tJewell School",
+          "bm25_score": -20.56439666942408
+        },
+        {
+          "page_id": "Buddy_Jewell",
+          "sentence_id": 0,
+          "text": "Buddy Jewell Jr. .",
+          "bm25_score": -20.482476262352755
+        },
+        {
+          "page_id": "Jewell",
+          "sentence_id": 0,
+          "text": "Jewell may refer to :",
+          "bm25_score": -20.482476262352755
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Jewell_-LRB-singer-RRB-",
+          "sentence_id": 0,
+          "text": "Jewell -LRB- a.k.a. Ju-L , born Jewell Caples , June 15 , 1968 ; later Jewell Peyton -RRB- is an R&B singer who was signed to Death Row Records from 1992 to 1996 .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9964593052864075,
+            "neutral": 0.00301322597078979,
+            "contradiction": 0.0005274155410006642
+          }
+        },
+        {
+          "page_id": "Fred_Jewell",
+          "sentence_id": 3,
+          "text": "Fred Jewell",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.010426871478557587,
+            "neutral": 0.9845004081726074,
+            "contradiction": 0.005072702653706074
+          }
+        },
+        {
+          "page_id": "Jewell_High_School",
+          "sentence_id": 5,
+          "text": "Jewell School , Jewell , Oregon",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.028555985540151596,
+            "neutral": 0.7672954797744751,
+            "contradiction": 0.204148530960083
+          }
+        },
+        {
+          "page_id": "Buddy_Jewell",
+          "sentence_id": 0,
+          "text": "Buddy Jewell Jr. .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.05535203590989113,
+            "neutral": 0.940535306930542,
+            "contradiction": 0.004112706985324621
+          }
+        },
+        {
+          "page_id": "Jewell",
+          "sentence_id": 0,
+          "text": "Jewell may refer to :",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.011066973209381104,
+            "neutral": 0.5057201385498047,
+            "contradiction": 0.48321282863616943
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            0
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            0
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            3
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            0
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            2
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            3
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            0
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            2
+          ],
+          [
+            "Woman_to_Woman_-LRB-Shirley_Brown_song-RRB-",
+            0
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            3
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            0
+          ]
+        ],
+        [
+          [
+            "Jewell_-LRB-singer-RRB-",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 166912,
+      "claim": "Johanna Braddy has no experience as an actress.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.997854,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Johanna_Braddy",
+        "sentence_id": 3,
+        "text": "In 2015 , Braddy co-starred as Anna Martin in the Lifetime dark comedy-drama series , Unreal .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.0007890004781074822,
+          "neutral": 0.0013570700539276004,
+          "contradiction": 0.9978539347648621
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Johanna_Braddy",
+        "sentence_id": 0,
+        "text": "Johanna Elizabeth Braddy -LRB- born August 30 , 1987 -RRB- is an American actress .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.014744614250957966,
+          "neutral": 0.015842320397496223,
+          "contradiction": 0.9694131016731262
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 0,
+          "text": "Johanna Elizabeth Braddy -LRB- born August 30 , 1987 -RRB- is an American actress .",
+          "bm25_score": -44.661096058394875
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 3,
+          "text": "In 2015 , Braddy co-starred as Anna Martin in the Lifetime dark comedy-drama series , Unreal .\tLifetime\tLifetime (TV network)\tUnreal\tUnreal (TV series)",
+          "bm25_score": -56.042611758402145
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 4,
+          "text": ", she is starring as Shelby Wyatt in the ABC thriller Quantico .\tABC\tAmerican Broadcasting Company\tQuantico\tQuantico (TV series)",
+          "bm25_score": -41.102992581745184
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 2,
+          "text": "She also starred in a main role as Jenny Matrix in the hit web series Video Game High School from 2012 to 2014 .\tweb series\tweb series\tVideo Game High School\tVideo Game High School",
+          "bm25_score": -37.87148431987649
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 1,
+          "text": "She played the leading role in the 2009 horror film The Grudge 3 , and has appeared in Hurt -LRB- 2009 -RRB- , Easy A -LRB- 2010 -RRB- , Paranormal Activity 3 -LRB- 2011 -RRB- , and The Levenger Tapes -LRB- 2011 -RRB- .\tThe Grudge 3\tThe Grudge 3\tHurt\tHurt (2009 film)\tEasy A\tEasy A\tParanormal Activity 3\tParanormal Activity 3\tThe Levenger Tapes\tThe Levenger Tapes",
+          "bm25_score": -33.006000800121974
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 0,
+          "text": "Johanna Elizabeth Braddy -LRB- born August 30 , 1987 -RRB- is an American actress .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.014744614250957966,
+            "neutral": 0.015842320397496223,
+            "contradiction": 0.9694131016731262
+          }
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 3,
+          "text": "In 2015 , Braddy co-starred as Anna Martin in the Lifetime dark comedy-drama series , Unreal .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0007890004781074822,
+            "neutral": 0.0013570700539276004,
+            "contradiction": 0.9978539347648621
+          }
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 4,
+          "text": ", she is starring as Shelby Wyatt in the ABC thriller Quantico .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0006005194154568017,
+            "neutral": 0.0025293759535998106,
+            "contradiction": 0.9968701004981995
+          }
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 2,
+          "text": "She also starred in a main role as Jenny Matrix in the hit web series Video Game High School from 2012 to 2014 .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0005784082459285855,
+            "neutral": 0.0015811482444405556,
+            "contradiction": 0.997840404510498
+          }
+        },
+        {
+          "page_id": "Johanna_Braddy",
+          "sentence_id": 1,
+          "text": "She played the leading role in the 2009 horror film The Grudge 3 , and has appeared in Hurt -LRB- 2009 -RRB- , Easy A -LRB- 2010 -RRB- , Paranormal Activity 3 -LRB- 2011 -RRB- , and The Levenger Tapes -LRB- 2011 -RRB- .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0012366821756586432,
+            "neutral": 0.002495883032679558,
+            "contradiction": 0.9962674975395203
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Johanna_Braddy",
+            0
+          ]
+        ],
+        [
+          [
+            "Johanna_Braddy",
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 119253,
+      "claim": "Robert Palmer (writer) has yet to write anything.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.998579,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Robert_Roswell_Palmer",
+        "sentence_id": 3,
+        "text": "Palmer also achieved distinction as a history text writer .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.00048660230822861195,
+          "neutral": 0.0009345490834675729,
+          "contradiction": 0.9985789060592651
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+        "sentence_id": 0,
+        "text": "Robert Franklin Palmer Jr. -LRB- June 19 , 1945 -- November 20 , 1997 -RRB- was an American writer , musicologist , clarinetist , saxophonist , and blues producer .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.01765964925289154,
+          "neutral": 0.03847936540842056,
+          "contradiction": 0.9438610076904297
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 0,
+          "text": "Robert Franklin Palmer Jr. -LRB- June 19 , 1945 -- November 20 , 1997 -RRB- was an American writer , musicologist , clarinetist , saxophonist , and blues producer .\tblues\tblues\tmusicologist\tmusicologist\tclarinetist\tclarinetist\tsaxophonist\tsaxophonist",
+          "bm25_score": -37.12950099810092
+        },
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 2,
+          "text": "A collection of his writings , Blues & Chaos : The Music Writing of Robert Palmer , edited by Anthony DeCurtis , was published by Simon & Schuster on November 10 , 2009 .\tAnthony DeCurtis\tAnthony DeCurtis\tSimon & Schuster\tSimon & Schuster",
+          "bm25_score": -48.101029845754596
+        },
+        {
+          "page_id": "Robert_Roswell_Palmer",
+          "sentence_id": 3,
+          "text": "Palmer also achieved distinction as a history text writer .",
+          "bm25_score": -31.852971313468903
+        },
+        {
+          "page_id": "Palmer_-LRB-surname-RRB-",
+          "sentence_id": 255,
+          "text": "Robert Palmer -LRB- writer -RRB- -LRB- 1945 -- 1977 -RRB- , American writer and musician",
+          "bm25_score": -29.02960904748307
+        },
+        {
+          "page_id": "Robert_Mason_-LRB-writer-RRB-",
+          "sentence_id": 22,
+          "text": "In 1979 , Mason began to write a book about his tour in Vietnam .",
+          "bm25_score": -28.020686713265682
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 0,
+          "text": "Robert Franklin Palmer Jr. -LRB- June 19 , 1945 -- November 20 , 1997 -RRB- was an American writer , musicologist , clarinetist , saxophonist , and blues producer .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01765964925289154,
+            "neutral": 0.03847936540842056,
+            "contradiction": 0.9438610076904297
+          }
+        },
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 2,
+          "text": "A collection of his writings , Blues & Chaos : The Music Writing of Robert Palmer , edited by Anthony DeCurtis , was published by Simon & Schuster on November 10 , 2009 .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0006516024586744606,
+            "neutral": 0.001057902816683054,
+            "contradiction": 0.998290479183197
+          }
+        },
+        {
+          "page_id": "Robert_Roswell_Palmer",
+          "sentence_id": 3,
+          "text": "Palmer also achieved distinction as a history text writer .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.00048660230822861195,
+            "neutral": 0.0009345490834675729,
+            "contradiction": 0.9985789060592651
+          }
+        },
+        {
+          "page_id": "Palmer_-LRB-surname-RRB-",
+          "sentence_id": 255,
+          "text": "Robert Palmer -LRB- writer -RRB- -LRB- 1945 -- 1977 -RRB- , American writer and musician",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0003913913678843528,
+            "neutral": 0.0011545452289283276,
+            "contradiction": 0.9984540939331055
+          }
+        },
+        {
+          "page_id": "Robert_Mason_-LRB-writer-RRB-",
+          "sentence_id": 22,
+          "text": "In 1979 , Mason began to write a book about his tour in Vietnam .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.00028002256294712424,
+            "neutral": 0.011423232033848763,
+            "contradiction": 0.9882966876029968
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Robert_Palmer_-LRB-writer-RRB-",
+            1
+          ]
+        ],
+        [
+          [
+            "Robert_Palmer_-LRB-writer-RRB-",
+            2
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 71376,
+      "claim": "Annette Badland was unable to appear in Wizards vs Aliens.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.878789,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Annette_Badland",
+        "sentence_id": 1,
+        "text": "She has played Margaret Blaine in the BBC science fiction series Doctor Who , Doomsday Dora in The Sparticle Mystery , Birdie Henshall in the drama series Cutting It , Mavis in season 6 of Skins , Ursula Crowe in children 's science fiction/fantasy series Wizards vs Aliens , and Babe Smith in soap opera EastEnders .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.05714491754770279,
+          "neutral": 0.06406573206186295,
+          "contradiction": 0.8787893652915955
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Annette_Badland",
+        "sentence_id": 1,
+        "text": "She has played Margaret Blaine in the BBC science fiction series Doctor Who , Doomsday Dora in The Sparticle Mystery , Birdie Henshall in the drama series Cutting It , Mavis in season 6 of Skins , Ursula Crowe in children 's science fiction/fantasy series Wizards vs Aliens , and Babe Smith in soap opera EastEnders .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.05714491754770279,
+          "neutral": 0.06406573206186295,
+          "contradiction": 0.8787893652915955
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Annette_Badland",
+          "sentence_id": 0,
+          "text": "Annette Badland -LRB- born 26 August 1949 -RRB- is an English actress known for a wide range of roles on TV , radio and film .",
+          "bm25_score": -43.9759619129602
+        },
+        {
+          "page_id": "Annette_Badland",
+          "sentence_id": 2,
+          "text": "Badland plays Hazel Woolley in BBC Radio The Archers .\tThe Archers\tThe Archers\tBBC\tBBC\tBBC Radio\tBBC Radio",
+          "bm25_score": -60.08921480945695
+        },
+        {
+          "page_id": "Annette_Badland",
+          "sentence_id": 1,
+          "text": "She has played Margaret Blaine in the BBC science fiction series Doctor Who , Doomsday Dora in The Sparticle Mystery , Birdie Henshall in the drama series Cutting It , Mavis in season 6 of Skins , Ursula Crowe in children 's science fiction/fantasy series Wizards vs Aliens , and Babe Smith in soap opera EastEnders .\tDoctor Who\tDoctor Who\tCutting It\tCutting It\tWizards vs Aliens\tWizards vs Aliens\tEastEnders\tEastEnders\tThe Sparticle Mystery\tThe Sparticle Mystery\tMargaret Blaine\tList of Doctor Who villains#Blon Fel-Fotch Pasameer-Day Slitheen\tBBC\tBBC\tscience fiction\tscience fiction\tfantasy\tfantasy\tBabe Smith\tBabe Smith\tsoap opera\tsoap opera",
+          "bm25_score": -58.149360678620894
+        },
+        {
+          "page_id": "Wizards_vs_Aliens",
+          "sentence_id": 7,
+          "text": "However , the show has no relation to Doctor Who .\tDoctor Who\tDoctor Who",
+          "bm25_score": -49.95746788632444
+        },
+        {
+          "page_id": "Wizards_vs_Aliens",
+          "sentence_id": 10,
+          "text": "Two series were commissioned by the BBC in late 2011 for broadcast in 2012 and 2013 respectively .",
+          "bm25_score": -48.886057954530955
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Annette_Badland",
+          "sentence_id": 0,
+          "text": "Annette Badland -LRB- born 26 August 1949 -RRB- is an English actress known for a wide range of roles on TV , radio and film .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.023952001705765724,
+            "neutral": 0.7955912351608276,
+            "contradiction": 0.18045674264431
+          }
+        },
+        {
+          "page_id": "Annette_Badland",
+          "sentence_id": 2,
+          "text": "Badland plays Hazel Woolley in BBC Radio The Archers .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.008216272108256817,
+            "neutral": 0.8978366255760193,
+            "contradiction": 0.09394703805446625
+          }
+        },
+        {
+          "page_id": "Annette_Badland",
+          "sentence_id": 1,
+          "text": "She has played Margaret Blaine in the BBC science fiction series Doctor Who , Doomsday Dora in The Sparticle Mystery , Birdie Henshall in the drama series Cutting It , Mavis in season 6 of Skins , Ursula Crowe in children 's science fiction/fantasy series Wizards vs Aliens , and Babe Smith in soap opera EastEnders .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.05714491754770279,
+            "neutral": 0.06406573206186295,
+            "contradiction": 0.8787893652915955
+          }
+        },
+        {
+          "page_id": "Wizards_vs_Aliens",
+          "sentence_id": 7,
+          "text": "However , the show has no relation to Doctor Who .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.014100320637226105,
+            "neutral": 0.9616519212722778,
+            "contradiction": 0.024247730150818825
+          }
+        },
+        {
+          "page_id": "Wizards_vs_Aliens",
+          "sentence_id": 10,
+          "text": "Two series were commissioned by the BBC in late 2011 for broadcast in 2012 and 2013 respectively .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.013746211305260658,
+            "neutral": 0.9686465263366699,
+            "contradiction": 0.017607269808650017
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Annette_Badland",
+            1
+          ]
+        ],
+        [
+          [
+            "Annette_Badland",
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 52278,
+      "claim": "Folklore includes jokes.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.795114,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Folklore",
+        "sentence_id": 1,
+        "text": "These include oral traditions such as tales , proverbs and jokes .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.795113742351532,
+          "neutral": 0.20008869469165802,
+          "contradiction": 0.0047975825145840645
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Folklore",
+        "sentence_id": 1,
+        "text": "These include oral traditions such as tales , proverbs and jokes .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.795113742351532,
+          "neutral": 0.20008869469165802,
+          "contradiction": 0.0047975825145840645
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Folklore",
+          "sentence_id": 0,
+          "text": "Folklore is the body of expressive culture shared by a particular group of people ; it encompasses the traditions common to that culture , subculture or group .",
+          "bm25_score": -17.530179039919837
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 1,
+          "text": "These include oral traditions such as tales , proverbs and jokes .\toral traditions\toral traditions\ttales\tNarrative\tproverbs\tproverbs\tjokes\tjokes",
+          "bm25_score": -34.241890495492285
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 30,
+          "text": "For folklore is also a verb .",
+          "bm25_score": -31.43767978769218
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 3,
+          "text": "Folklore also includes customary lore , the forms and rituals of celebrations such as Christmas and weddings , folk dances and initiation rites .\tcustomary lore\tTradition\tlore\t:wikt:lore",
+          "bm25_score": -31.200184356430746
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 33,
+          "text": "`` As new groups emerge , new folklore is created ... surfers , motorcyclists , computer programmers '' .\tcomputer programmers\t:Category:Computer folklore",
+          "bm25_score": -30.998688412351814
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Folklore",
+          "sentence_id": 0,
+          "text": "Folklore is the body of expressive culture shared by a particular group of people ; it encompasses the traditions common to that culture , subculture or group .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0060987314209342,
+            "neutral": 0.9823718667030334,
+            "contradiction": 0.01152941957116127
+          }
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 1,
+          "text": "These include oral traditions such as tales , proverbs and jokes .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.795113742351532,
+            "neutral": 0.20008869469165802,
+            "contradiction": 0.0047975825145840645
+          }
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 30,
+          "text": "For folklore is also a verb .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.005804567597806454,
+            "neutral": 0.9857296943664551,
+            "contradiction": 0.00846580509096384
+          }
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 3,
+          "text": "Folklore also includes customary lore , the forms and rituals of celebrations such as Christmas and weddings , folk dances and initiation rites .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.007167191244661808,
+            "neutral": 0.948431670665741,
+            "contradiction": 0.04440112039446831
+          }
+        },
+        {
+          "page_id": "Folklore",
+          "sentence_id": 33,
+          "text": "`` As new groups emerge , new folklore is created ... surfers , motorcyclists , computer programmers '' .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.005121157038956881,
+            "neutral": 0.9921139478683472,
+            "contradiction": 0.0027648431714624166
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Folklore",
+            0
+          ],
+          [
+            "Folklore",
+            1
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 70385,
+      "claim": "Selena Gomez performed Same Old Love.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.66824,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Selena_Gomez",
+        "sentence_id": 14,
+        "text": "In 2015 , she released her second solo album , Revival , which debuted at number one on the Billboard 200 , while the first three singles , `` Good for You , '' `` Same Old Love , '' and `` Hands to Myself , '' all topped the Mainstream Top 40 chart in the United States .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.6682403087615967,
+          "neutral": 0.32275113463401794,
+          "contradiction": 0.009008446708321571
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Selena_Gomez",
+        "sentence_id": 14,
+        "text": "In 2015 , she released her second solo album , Revival , which debuted at number one on the Billboard 200 , while the first three singles , `` Good for You , '' `` Same Old Love , '' and `` Hands to Myself , '' all topped the Mainstream Top 40 chart in the United States .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.6682403087615967,
+          "neutral": 0.32275113463401794,
+          "contradiction": 0.009008446708321571
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 0,
+          "text": "Selena Marie Gomez -LRB- -LSB- s\u0259\u02c8li\u02d0n\u0259_m\u0259\u02c8\u0279i\u02d0_\u02c8\u0261o\u028am\u025bz -RSB- ; -LSB- se\u02c8lena \u02c8\u0263omes -RSB- ; born July 22 , 1992 -RRB- is an American actress and singer .",
+          "bm25_score": -34.648596264799764
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 4,
+          "text": "In 2008 , she signed a recording contract with Hollywood Records and formed her band Selena Gomez & the Scene .\tHollywood\tHollywood Records\tSelena Gomez & the Scene\tSelena Gomez & the Scene\tHollywood Records\tHollywood Records",
+          "bm25_score": -61.31720862575851
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 14,
+          "text": "In 2015 , she released her second solo album , Revival , which debuted at number one on the Billboard 200 , while the first three singles , `` Good for You , '' `` Same Old Love , '' and `` Hands to Myself , '' all topped the Mainstream Top 40 chart in the United States .\tRevival\tRevival (Selena Gomez album)\tGood for You\tGood for You (song)\tSame Old Love\tSame Old Love\tHands to Myself\tHands to Myself\tMainstream Top 40\tMainstream Top 40\tBillboard\tBillboard (magazine)",
+          "bm25_score": -56.32332299797336
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 20,
+          "text": "As of November 2016 , Gomez is the most-followed Instagram user in the world .\tInstagram\tInstagram",
+          "bm25_score": -46.338373276744306
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 10,
+          "text": "Gomez also took her singing career in a different direction , with the release of her first solo album Stars Dance -LRB- 2013 -RRB- ; the album debuted atop the Billboard 200 in the United States and included the top ten single `` Come & Get It . ''\tStars Dance\tStars Dance\tCome & Get It\tCome & Get It (Selena Gomez song)\tBillboard\tBillboard (magazine)",
+          "bm25_score": -45.236111689655566
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 0,
+          "text": "Selena Marie Gomez -LRB- -LSB- s\u0259\u02c8li\u02d0n\u0259_m\u0259\u02c8\u0279i\u02d0_\u02c8\u0261o\u028am\u025bz -RSB- ; -LSB- se\u02c8lena \u02c8\u0263omes -RSB- ; born July 22 , 1992 -RRB- is an American actress and singer .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.031885936856269836,
+            "neutral": 0.9565781950950623,
+            "contradiction": 0.011535905301570892
+          }
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 4,
+          "text": "In 2008 , she signed a recording contract with Hollywood Records and formed her band Selena Gomez & the Scene .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.007912784814834595,
+            "neutral": 0.9722862839698792,
+            "contradiction": 0.01980096846818924
+          }
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 14,
+          "text": "In 2015 , she released her second solo album , Revival , which debuted at number one on the Billboard 200 , while the first three singles , `` Good for You , '' `` Same Old Love , '' and `` Hands to Myself , '' all topped the Mainstream Top 40 chart in the United States .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.6682403087615967,
+            "neutral": 0.32275113463401794,
+            "contradiction": 0.009008446708321571
+          }
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 20,
+          "text": "As of November 2016 , Gomez is the most-followed Instagram user in the world .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.013759289868175983,
+            "neutral": 0.9607658386230469,
+            "contradiction": 0.025474833324551582
+          }
+        },
+        {
+          "page_id": "Selena_Gomez",
+          "sentence_id": 10,
+          "text": "Gomez also took her singing career in a different direction , with the release of her first solo album Stars Dance -LRB- 2013 -RRB- ; the album debuted atop the Billboard 200 in the United States and included the top ten single `` Come & Get It . ''",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.014691738411784172,
+            "neutral": 0.9453274607658386,
+            "contradiction": 0.039980772882699966
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Same_Old_Love",
+            0
+          ]
+        ],
+        [
+          [
+            "Revival_-LRB-Selena_Gomez_album-RRB-",
+            0
+          ],
+          [
+            "Revival_-LRB-Selena_Gomez_album-RRB-",
+            18
+          ],
+          [
+            "Same_Old_Love",
+            9
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 98008,
+      "claim": "Shawn Carlson was born in May of 1960.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": true,
+      "confidence": 0.995866,
+      "decision_basis": "unrelated_entity_contradictions_ignored",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Shawn_Carlson",
+          "sentence_id": 0,
+          "text": "Shawn Carlson -LRB- born 1960 -RRB- is an American physicist , science writer , and a STEM educator .\tphysicist\tphysicist\tscience writer\tscience writer\tSTEM\tSTEM fields\tAmerican\tAmericans",
+          "bm25_score": -34.54563741713813
+        },
+        {
+          "page_id": "Astrology_and_science",
+          "sentence_id": 6,
+          "text": "The most famous test was headed by Shawn Carlson and included a committee of scientists and a committee of astrologers .\tShawn Carlson\tShawn Carlson",
+          "bm25_score": -29.034785381966486
+        },
+        {
+          "page_id": "Linda_Carlson",
+          "sentence_id": 0,
+          "text": "Linda Carlson -LRB- born May 12 , 1945 -RRB- is an American actress .\tMay 12\tMay 12\t1945\t1945\tAmerican\tUnited States\tactress\tactor",
+          "bm25_score": -26.517180264404885
+        },
+        {
+          "page_id": "John_F._Carlson",
+          "sentence_id": 0,
+          "text": "John F. Carlson -LRB- May 5 , 1875 -- May 19 , 1947 -RRB- was a Swedish-born American Impressionist artist .\tAmerican Impressionist\tAmerican Impressionism",
+          "bm25_score": -25.843036776570425
+        },
+        {
+          "page_id": "Shawn_Daniels",
+          "sentence_id": 0,
+          "text": "Shawn Daniels -LRB- born May 14 , 1979 -RRB- is an American professional basketball player .\tbasketball\tbasketball",
+          "bm25_score": -24.751416097483954
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Shawn_Carlson",
+          "sentence_id": 0,
+          "text": "Shawn Carlson -LRB- born 1960 -RRB- is an American physicist , science writer , and a STEM educator .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.04843075945973396,
+            "neutral": 0.9492740035057068,
+            "contradiction": 0.002295311540365219
+          }
+        },
+        {
+          "page_id": "Astrology_and_science",
+          "sentence_id": 6,
+          "text": "The most famous test was headed by Shawn Carlson and included a committee of scientists and a committee of astrologers .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0028836028650403023,
+            "neutral": 0.9958662986755371,
+            "contradiction": 0.0012500542216002941
+          }
+        },
+        {
+          "page_id": "Linda_Carlson",
+          "sentence_id": 0,
+          "text": "Linda Carlson -LRB- born May 12 , 1945 -RRB- is an American actress .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": false,
+          "exclusion_reason": "evidence_does_not_identify_claim_subject",
+          "probabilities": {
+            "entailment": 0.00866208877414465,
+            "neutral": 0.16493502259254456,
+            "contradiction": 0.8264028429985046
+          }
+        },
+        {
+          "page_id": "John_F._Carlson",
+          "sentence_id": 0,
+          "text": "John F. Carlson -LRB- May 5 , 1875 -- May 19 , 1947 -RRB- was a Swedish-born American Impressionist artist .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": false,
+          "exclusion_reason": "evidence_does_not_identify_claim_subject",
+          "probabilities": {
+            "entailment": 0.0015182460192590952,
+            "neutral": 0.0190875306725502,
+            "contradiction": 0.9793941378593445
+          }
+        },
+        {
+          "page_id": "Shawn_Daniels",
+          "sentence_id": 0,
+          "text": "Shawn Daniels -LRB- born May 14 , 1979 -RRB- is an American professional basketball player .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": false,
+          "exclusion_reason": "evidence_does_not_identify_claim_subject",
+          "probabilities": {
+            "entailment": 0.006713290233165026,
+            "neutral": 0.04422059282660484,
+            "contradiction": 0.949066162109375
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 15855,
+      "claim": "The Columbia River has yet to undergo dredging.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.960472,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Columbia_River",
+        "sentence_id": 21,
+        "text": "To aid ship and barge navigation , locks have been built along the lower Columbia and its tributaries , and dredging has opened , maintained , and enlarged shipping channels .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.021798543632030487,
+          "neutral": 0.01772976480424404,
+          "contradiction": 0.9604716897010803
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Columbia_River",
+        "sentence_id": 21,
+        "text": "To aid ship and barge navigation , locks have been built along the lower Columbia and its tributaries , and dredging has opened , maintained , and enlarged shipping channels .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.021798543632030487,
+          "neutral": 0.01772976480424404,
+          "contradiction": 0.9604716897010803
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 0,
+          "text": "The Columbia River is the largest river in the Pacific Northwest region of North America .\tPacific Northwest\tPacific Northwest",
+          "bm25_score": -23.610869087839852
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 21,
+          "text": "To aid ship and barge navigation , locks have been built along the lower Columbia and its tributaries , and dredging has opened , maintained , and enlarged shipping channels .\tlocks\tLock (water transport)\tdredging\tdredging\tshipping channels\tChannel (geography)#Nautical channels",
+          "bm25_score": -42.09949832827529
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 1,
+          "text": "The river rises in the Rocky Mountains of British Columbia , Canada .\tBritish Columbia\tBritish Columbia\trises\tHeadwater\tRocky Mountains\tRocky Mountains",
+          "bm25_score": -38.089574956321776
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 16,
+          "text": "Overland explorers entered the Willamette Valley through the scenic but treacherous Columbia River Gorge , and pioneers began to settle the valley in increasing numbers .\tColumbia River Gorge\tColumbia River Gorge\tWillamette Valley\tWillamette Valley",
+          "bm25_score": -37.49408954820148
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 5,
+          "text": "By volume the fourth-largest river in the United States , the Columbia has the greatest flow of any North American river entering the Pacific .",
+          "bm25_score": -35.57337327239981
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 0,
+          "text": "The Columbia River is the largest river in the Pacific Northwest region of North America .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.005800413899123669,
+            "neutral": 0.9841064214706421,
+            "contradiction": 0.010093200020492077
+          }
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 21,
+          "text": "To aid ship and barge navigation , locks have been built along the lower Columbia and its tributaries , and dredging has opened , maintained , and enlarged shipping channels .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.021798543632030487,
+            "neutral": 0.01772976480424404,
+            "contradiction": 0.9604716897010803
+          }
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 1,
+          "text": "The river rises in the Rocky Mountains of British Columbia , Canada .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.006310238502919674,
+            "neutral": 0.9885108470916748,
+            "contradiction": 0.0051789493300020695
+          }
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 16,
+          "text": "Overland explorers entered the Willamette Valley through the scenic but treacherous Columbia River Gorge , and pioneers began to settle the valley in increasing numbers .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0017588026821613312,
+            "neutral": 0.9884330630302429,
+            "contradiction": 0.009808031842112541
+          }
+        },
+        {
+          "page_id": "Columbia_River",
+          "sentence_id": 5,
+          "text": "By volume the fourth-largest river in the United States , the Columbia has the greatest flow of any North American river entering the Pacific .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0031005460768938065,
+            "neutral": 0.9873843193054199,
+            "contradiction": 0.009515030309557915
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Columbia_River",
+            21
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 170396,
+      "claim": "Michael Vick is an American.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.99672,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Michael_Vick",
+        "sentence_id": 0,
+        "text": "Michael Dwayne Vick -LRB- born June 26 , 1980 -RRB- is a former American football quarterback who played 13 seasons in the National Football League , primarily with the Atlanta Falcons and the Philadelphia Eagles .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9967195391654968,
+          "neutral": 0.00275520165450871,
+          "contradiction": 0.0005253441631793976
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Michael_Vick",
+        "sentence_id": 0,
+        "text": "Michael Dwayne Vick -LRB- born June 26 , 1980 -RRB- is a former American football quarterback who played 13 seasons in the National Football League , primarily with the Atlanta Falcons and the Philadelphia Eagles .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9967195391654968,
+          "neutral": 0.00275520165450871,
+          "contradiction": 0.0005253441631793976
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 0,
+          "text": "Michael Dwayne Vick -LRB- born June 26 , 1980 -RRB- is a former American football quarterback who played 13 seasons in the National Football League , primarily with the Atlanta Falcons and the Philadelphia Eagles .\tAtlanta Falcons\tAtlanta Falcons\tPhiladelphia Eagles\tPhiladelphia Eagles\tAmerican football\tAmerican football\tquarterback\tquarterback\tNational Football League\tNational Football League",
+          "bm25_score": -28.645651805042405
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 11,
+          "text": "After serving his sentence , Vick signed with the Eagles in 2009 .",
+          "bm25_score": -50.15782036203479
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 7,
+          "text": "His arrest and subsequent conviction garnered Vick notoriety with the general public , which lasted throughout the rest of his career .",
+          "bm25_score": -46.349205668102684
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 2,
+          "text": "During his six years with the Falcons , Vick was regarded as having transformed the quarterback position with his rushing abilities and was named to three Pro Bowls .\tquarterback\tquarterback",
+          "bm25_score": -43.2258068260967
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 13,
+          "text": "In his final two seasons , Vick played for the New York Jets and Pittsburgh Steelers for one year each , primarily as a backup .\tNew York Jets\tNew York Jets\tPittsburgh Steelers\tPittsburgh Steelers",
+          "bm25_score": -42.00270504241196
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 0,
+          "text": "Michael Dwayne Vick -LRB- born June 26 , 1980 -RRB- is a former American football quarterback who played 13 seasons in the National Football League , primarily with the Atlanta Falcons and the Philadelphia Eagles .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9967195391654968,
+            "neutral": 0.00275520165450871,
+            "contradiction": 0.0005253441631793976
+          }
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 11,
+          "text": "After serving his sentence , Vick signed with the Eagles in 2009 .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9538572430610657,
+            "neutral": 0.04541047662496567,
+            "contradiction": 0.000732322339899838
+          }
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 7,
+          "text": "His arrest and subsequent conviction garnered Vick notoriety with the general public , which lasted throughout the rest of his career .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9447405934333801,
+            "neutral": 0.054255276918411255,
+            "contradiction": 0.0010040864581242204
+          }
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 2,
+          "text": "During his six years with the Falcons , Vick was regarded as having transformed the quarterback position with his rushing abilities and was named to three Pro Bowls .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9702662825584412,
+            "neutral": 0.028970347717404366,
+            "contradiction": 0.0007633619825355709
+          }
+        },
+        {
+          "page_id": "Michael_Vick",
+          "sentence_id": 13,
+          "text": "In his final two seasons , Vick played for the New York Jets and Pittsburgh Steelers for one year each , primarily as a backup .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9362415075302124,
+            "neutral": 0.06293144822120667,
+            "contradiction": 0.0008270646212622523
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Michael_Vick",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 165670,
+      "claim": "Tom Baker has narrated a type of digital entertainment.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": false,
+      "confidence": 0.951943,
+      "decision_basis": "all_evidence_pairs_predicted_neutral",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 0,
+          "text": "Tom Baker -LRB- born September 12 , 1954 , Buffalo , New York -RRB- is a professional bowler on the PBA Tour and a member of the PBA Hall of Fame .\tPBA Tour\tPBA Tour",
+          "bm25_score": -11.49702117585798
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 17,
+          "text": "Baker also owns 14 PBA Regional titles and 19 PBA50 Regional titles .",
+          "bm25_score": -21.773827290193427
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 5,
+          "text": "Baker had his best pro season in 1981 , winning three titles and over $ 100,000 that season .",
+          "bm25_score": -20.717678973402144
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 25,
+          "text": "Baker was ranked # 42 on the PBA 's 2008 list of `` 50 Greatest Players of the Last 50 Years . ''",
+          "bm25_score": -20.331193125283335
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 20,
+          "text": "In the 2008-09 season , Baker was the oldest player in the `` exempt '' field on the Lumber Liquidators PBA Tour .\tPBA Tour\tPBA Tour",
+          "bm25_score": -19.440832468234706
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 0,
+          "text": "Tom Baker -LRB- born September 12 , 1954 , Buffalo , New York -RRB- is a professional bowler on the PBA Tour and a member of the PBA Hall of Fame .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.02678237296640873,
+            "neutral": 0.9445022344589233,
+            "contradiction": 0.028715383261442184
+          }
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 17,
+          "text": "Baker also owns 14 PBA Regional titles and 19 PBA50 Regional titles .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.21094894409179688,
+            "neutral": 0.7806073427200317,
+            "contradiction": 0.008443694561719894
+          }
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 5,
+          "text": "Baker had his best pro season in 1981 , winning three titles and over $ 100,000 that season .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0358712337911129,
+            "neutral": 0.9519428610801697,
+            "contradiction": 0.012185923755168915
+          }
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 25,
+          "text": "Baker was ranked # 42 on the PBA 's 2008 list of `` 50 Greatest Players of the Last 50 Years . ''",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.13611875474452972,
+            "neutral": 0.8536075353622437,
+            "contradiction": 0.010273700580000877
+          }
+        },
+        {
+          "page_id": "Tom_Baker_-LRB-bowler-RRB-",
+          "sentence_id": 20,
+          "text": "In the 2008-09 season , Baker was the oldest player in the `` exempt '' field on the Lumber Liquidators PBA Tour .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.19401830434799194,
+            "neutral": 0.7999101877212524,
+            "contradiction": 0.006071494426578283
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Tom_Baker_-LRB-English_actor-RRB-",
+            15
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 46970,
+      "claim": "Rachel Green was played by Courtney Cox.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.69984,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Rachel_Green",
+        "sentence_id": 7,
+        "text": "The role of Rachel was originally offered to actresses T\u00e9a Leoni , the producer 's first choice , and Courteney Cox , both of whom declined , Leoni in favor of starring in the sitcom The Naked Truth , and Cox in favor of playing Rachel 's best friend Monica in Friends .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.1434560865163803,
+          "neutral": 0.15670345723628998,
+          "contradiction": 0.6998404264450073
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Rachel_Green",
+        "sentence_id": 7,
+        "text": "The role of Rachel was originally offered to actresses T\u00e9a Leoni , the producer 's first choice , and Courteney Cox , both of whom declined , Leoni in favor of starring in the sitcom The Naked Truth , and Cox in favor of playing Rachel 's best friend Monica in Friends .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.1434560865163803,
+          "neutral": 0.15670345723628998,
+          "contradiction": 0.6998404264450073
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 0,
+          "text": "Rachel Karen Green is a fictional character , one of the six main characters who appeared in the American sitcom Friends .\tFriends\tFriends\tsix main characters\tList of Friends characters",
+          "bm25_score": -27.16007786058372
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 7,
+          "text": "The role of Rachel was originally offered to actresses T\u00e9a Leoni , the producer 's first choice , and Courteney Cox , both of whom declined , Leoni in favor of starring in the sitcom The Naked Truth , and Cox in favor of playing Rachel 's best friend Monica in Friends .\tFriends\tFriends\tMonica\tMonica (Friends)\tT\u00e9a Leoni\tT\u00e9a Leoni\tCourteney Cox\tCourteney Cox\tThe Naked Truth\tThe Naked Truth (TV series)",
+          "bm25_score": -42.12327057787276
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 16,
+          "text": "Rachel is also regarded as a style icon due to her influence on womenswear during the 1990s .",
+          "bm25_score": -38.77509970991743
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 4,
+          "text": "Together , the characters have a daughter , Emma .\tEmma\tEmma Geller-Green",
+          "bm25_score": -37.43439738647778
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 12,
+          "text": "Critical reception towards Rachel has remained consistently positive throughout Friends decade-long run , with The A.V. Club attributing much of the show 's early success to the character .\tFriends\tFriends\tThe A.V. Club\tThe A.V. Club",
+          "bm25_score": -33.05940788419567
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 0,
+          "text": "Rachel Karen Green is a fictional character , one of the six main characters who appeared in the American sitcom Friends .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.009667331352829933,
+            "neutral": 0.9743107557296753,
+            "contradiction": 0.01602187752723694
+          }
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 7,
+          "text": "The role of Rachel was originally offered to actresses T\u00e9a Leoni , the producer 's first choice , and Courteney Cox , both of whom declined , Leoni in favor of starring in the sitcom The Naked Truth , and Cox in favor of playing Rachel 's best friend Monica in Friends .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.1434560865163803,
+            "neutral": 0.15670345723628998,
+            "contradiction": 0.6998404264450073
+          }
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 16,
+          "text": "Rachel is also regarded as a style icon due to her influence on womenswear during the 1990s .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.028134526684880257,
+            "neutral": 0.9666615724563599,
+            "contradiction": 0.005203895270824432
+          }
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 4,
+          "text": "Together , the characters have a daughter , Emma .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.00495837302878499,
+            "neutral": 0.9911786913871765,
+            "contradiction": 0.0038628976326435804
+          }
+        },
+        {
+          "page_id": "Rachel_Green",
+          "sentence_id": 12,
+          "text": "Critical reception towards Rachel has remained consistently positive throughout Friends decade-long run , with The A.V. Club attributing much of the show 's early success to the character .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01732674427330494,
+            "neutral": 0.9652891755104065,
+            "contradiction": 0.01738404668867588
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Rachel_Green",
+            1
+          ]
+        ],
+        [
+          [
+            "Monica_Geller",
+            1
+          ],
+          [
+            "Rachel_Green",
+            2
+          ]
+        ],
+        [
+          [
+            "Rachel_Green",
+            7
+          ]
+        ],
+        [
+          [
+            "Rachel_Green",
+            9
+          ]
+        ],
+        [
+          [
+            "Rachel_Green",
+            20
+          ]
+        ],
+        [
+          [
+            "Rachel_Green",
+            21
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 159591,
+      "claim": "Dan O'Bannon was a ventriloquist and doctor.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": true,
+      "confidence": 0.976154,
+      "decision_basis": "all_evidence_pairs_predicted_neutral",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Dan_O'Bannon",
+          "sentence_id": 0,
+          "text": "Daniel Thomas `` Dan '' O'Bannon -LRB- September 30 , 1946 -- December 17 , 2009 -RRB- was an American film screenwriter , director , visual effects supervisor , and occasional actor , usually in the science fiction and horror genres .\tscreenwriter\tscreenwriter\tdirector\tfilm director\tvisual effects supervisor\tvisual effects supervisor\tscience fiction\tscience fiction\thorror\tHorror fiction",
+          "bm25_score": -29.229906539116907
+        },
+        {
+          "page_id": "Dan_O'Bannon",
+          "sentence_id": 3,
+          "text": "O'Bannon is best known for having written the screenplay for Alien , adapted from a story he wrote with Ronald Shusett .\tAlien\tAlien (film)\tRonald Shusett\tRonald Shusett",
+          "bm25_score": -43.090902996976226
+        },
+        {
+          "page_id": "Dan_O'Bannon",
+          "sentence_id": 4,
+          "text": "He also contributed computer animation to Star Wars , worked on cult classics such as Dark Star , Heavy Metal and Total Recall , and both wrote and directed the horror comedy The Return of the Living Dead .\thorror\tHorror fiction\tStar Wars\tStar Wars (film)\tDark Star\tDark Star (film)\tHeavy Metal\tHeavy Metal (film)\tTotal Recall\tTotal Recall (1990 film)\tThe Return of the Living Dead\tThe Return of the Living Dead",
+          "bm25_score": -27.3593338685457
+        },
+        {
+          "page_id": "List_of_people_named_Daniel",
+          "sentence_id": 69,
+          "text": "Dan O'Bannon -LRB- 1946 -- 2009 -RRB- , American filmmaker\tDan O'Bannon\tDan O'Bannon",
+          "bm25_score": -29.211637059544216
+        },
+        {
+          "page_id": "O'Bannon_-LRB-surname-RRB-",
+          "sentence_id": 6,
+          "text": "Dan O'Bannon -LRB- 1946-2009 -RRB- , American screenwriter and film director",
+          "bm25_score": -29.12781451700919
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Dan_O'Bannon",
+          "sentence_id": 0,
+          "text": "Daniel Thomas `` Dan '' O'Bannon -LRB- September 30 , 1946 -- December 17 , 2009 -RRB- was an American film screenwriter , director , visual effects supervisor , and occasional actor , usually in the science fiction and horror genres .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.003573449095711112,
+            "neutral": 0.9267973899841309,
+            "contradiction": 0.06962919235229492
+          }
+        },
+        {
+          "page_id": "Dan_O'Bannon",
+          "sentence_id": 3,
+          "text": "O'Bannon is best known for having written the screenplay for Alien , adapted from a story he wrote with Ronald Shusett .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0018269753782078624,
+            "neutral": 0.9304894208908081,
+            "contradiction": 0.06768350303173065
+          }
+        },
+        {
+          "page_id": "Dan_O'Bannon",
+          "sentence_id": 4,
+          "text": "He also contributed computer animation to Star Wars , worked on cult classics such as Dark Star , Heavy Metal and Total Recall , and both wrote and directed the horror comedy The Return of the Living Dead .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0020723796915262938,
+            "neutral": 0.955140233039856,
+            "contradiction": 0.04278739169239998
+          }
+        },
+        {
+          "page_id": "List_of_people_named_Daniel",
+          "sentence_id": 69,
+          "text": "Dan O'Bannon -LRB- 1946 -- 2009 -RRB- , American filmmaker",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0011413715546950698,
+            "neutral": 0.9761537909507751,
+            "contradiction": 0.02270483784377575
+          }
+        },
+        {
+          "page_id": "O'Bannon_-LRB-surname-RRB-",
+          "sentence_id": 6,
+          "text": "Dan O'Bannon -LRB- 1946-2009 -RRB- , American screenwriter and film director",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0011227449867874384,
+            "neutral": 0.8833979964256287,
+            "contradiction": 0.11547929048538208
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 54551,
+      "claim": "Tiber Oil Field is operated by mermaids.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "REFUTES",
+      "correct": false,
+      "confidence": 0.833661,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Tiber_Oil_Field",
+        "sentence_id": 1,
+        "text": "The deepwater field -LRB- defined as water depth 1300 to , -RRB- was discovered in September 2009 and it is operated by BP .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.00285379309207201,
+          "neutral": 0.1634855568408966,
+          "contradiction": 0.8336606621742249
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Tiber_Oil_Field",
+        "sentence_id": 1,
+        "text": "The deepwater field -LRB- defined as water depth 1300 to , -RRB- was discovered in September 2009 and it is operated by BP .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.00285379309207201,
+          "neutral": 0.1634855568408966,
+          "contradiction": 0.8336606621742249
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 0,
+          "text": "The Tiber Oil Field is a deepwater offshore oil field located in the Keathley Canyon block 102 of the United States sector of the Gulf of Mexico .\tUnited States\tUnited States\tGulf of Mexico\tGulf of Mexico\tKeathley Canyon\tKeathley Canyon\toil field\toil field",
+          "bm25_score": -43.70069620394224
+        },
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 1,
+          "text": "The deepwater field -LRB- defined as water depth 1300 to , -RRB- was discovered in September 2009 and it is operated by BP .\tBP\tBP",
+          "bm25_score": -59.837446940839605
+        },
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 2,
+          "text": "Described as a `` giant '' find , it is estimated to contain 4 to of oil in place .\toil in place\toil in place",
+          "bm25_score": -59.52840410759025
+        },
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 3,
+          "text": "Although BP states it is too early to be sure of the size -- a `` huge '' field is usually considered to contain 250 Moilbbl .\tBP\tBP",
+          "bm25_score": -53.56448468093174
+        },
+        {
+          "page_id": "Tiber_-LRB-disambiguation-RRB-",
+          "sentence_id": 20,
+          "text": "Tiber Oil Field , the deepwater offshore oil field located in the Gulf of Mexico\tTiber\tTiber\tTiber Oil Field\tTiber Oil Field",
+          "bm25_score": -41.54505205923014
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 0,
+          "text": "The Tiber Oil Field is a deepwater offshore oil field located in the Keathley Canyon block 102 of the United States sector of the Gulf of Mexico .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.004809112753719091,
+            "neutral": 0.6440252661705017,
+            "contradiction": 0.35116568207740784
+          }
+        },
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 1,
+          "text": "The deepwater field -LRB- defined as water depth 1300 to , -RRB- was discovered in September 2009 and it is operated by BP .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.00285379309207201,
+            "neutral": 0.1634855568408966,
+            "contradiction": 0.8336606621742249
+          }
+        },
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 2,
+          "text": "Described as a `` giant '' find , it is estimated to contain 4 to of oil in place .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0025736114475876093,
+            "neutral": 0.5071931481361389,
+            "contradiction": 0.4902332127094269
+          }
+        },
+        {
+          "page_id": "Tiber_Oil_Field",
+          "sentence_id": 3,
+          "text": "Although BP states it is too early to be sure of the size -- a `` huge '' field is usually considered to contain 250 Moilbbl .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0022860963363200426,
+            "neutral": 0.23414383828639984,
+            "contradiction": 0.7635700702667236
+          }
+        },
+        {
+          "page_id": "Tiber_-LRB-disambiguation-RRB-",
+          "sentence_id": 20,
+          "text": "Tiber Oil Field , the deepwater offshore oil field located in the Gulf of Mexico",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0015671341679990292,
+            "neutral": 0.23389755189418793,
+            "contradiction": 0.7645353078842163
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 177150,
+      "claim": "Invasion literature is a genre.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.994869,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Invasion_literature",
+        "sentence_id": 0,
+        "text": "Invasion literature -LRB- or the invasion novel -RRB- is a literary genre most notable between 1871 and the First World War -LRB- 1914 -RRB- but still practised to this day .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9948688745498657,
+          "neutral": 0.0037330607883632183,
+          "contradiction": 0.0013980467338114977
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Invasion_literature",
+        "sentence_id": 0,
+        "text": "Invasion literature -LRB- or the invasion novel -RRB- is a literary genre most notable between 1871 and the First World War -LRB- 1914 -RRB- but still practised to this day .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9948688745498657,
+          "neutral": 0.0037330607883632183,
+          "contradiction": 0.0013980467338114977
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 0,
+          "text": "Invasion literature -LRB- or the invasion novel -RRB- is a literary genre most notable between 1871 and the First World War -LRB- 1914 -RRB- but still practised to this day .\tliterary genre\tliterary genre\tFirst World War\tWorld War I\tinvasion\tinvasion",
+          "bm25_score": -28.078673465617406
+        },
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 1,
+          "text": "The genre first became recognizable starting in Britain in 1871 with The Battle of Dorking , a fictional account of an invasion of England by Germany .\tBritain\tUnited Kingdom of Great Britain and Ireland\tThe Battle of Dorking\tThe Battle of Dorking\tEngland\tEngland\tGermany\tGermany\tinvasion\tinvasion",
+          "bm25_score": -42.71792448700689
+        },
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 2,
+          "text": "This short story was so popular it started a literary craze for tales that aroused imaginations and anxieties about hypothetical invasions by foreign powers , and by 1914 the genre had amassed a corpus of over 400 books , many best-sellers , and a world-wide audience .",
+          "bm25_score": -33.097549758148794
+        },
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 3,
+          "text": "The genre was influential in Britain in shaping politics , national policies and popular perceptions in the years leading up to the First World War , and remains a part of popular culture to this day .\tFirst World War\tWorld War I\tBritain\tUnited Kingdom of Great Britain and Ireland",
+          "bm25_score": -32.53518186729882
+        },
+        {
+          "page_id": "Alien_invasion",
+          "sentence_id": 4,
+          "text": "H.G. Wells ' novel The War of the Worlds extended the invasion literature that was already common when science fiction was first emerging as a genre .\tscience fiction\tscience fiction\tH.G. Wells\tH.G. Wells\tThe War of the Worlds\tThe War of the Worlds\tinvasion literature\tinvasion literature",
+          "bm25_score": -26.004682328286584
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 0,
+          "text": "Invasion literature -LRB- or the invasion novel -RRB- is a literary genre most notable between 1871 and the First World War -LRB- 1914 -RRB- but still practised to this day .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9948688745498657,
+            "neutral": 0.0037330607883632183,
+            "contradiction": 0.0013980467338114977
+          }
+        },
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 1,
+          "text": "The genre first became recognizable starting in Britain in 1871 with The Battle of Dorking , a fictional account of an invasion of England by Germany .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.7370409369468689,
+            "neutral": 0.2574400007724762,
+            "contradiction": 0.005519070662558079
+          }
+        },
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 2,
+          "text": "This short story was so popular it started a literary craze for tales that aroused imaginations and anxieties about hypothetical invasions by foreign powers , and by 1914 the genre had amassed a corpus of over 400 books , many best-sellers , and a world-wide audience .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9389938712120056,
+            "neutral": 0.05730395019054413,
+            "contradiction": 0.0037021778989583254
+          }
+        },
+        {
+          "page_id": "Invasion_literature",
+          "sentence_id": 3,
+          "text": "The genre was influential in Britain in shaping politics , national policies and popular perceptions in the years leading up to the First World War , and remains a part of popular culture to this day .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.1545194536447525,
+            "neutral": 0.8417001962661743,
+            "contradiction": 0.003780343336984515
+          }
+        },
+        {
+          "page_id": "Alien_invasion",
+          "sentence_id": 4,
+          "text": "H.G. Wells ' novel The War of the Worlds extended the invasion literature that was already common when science fiction was first emerging as a genre .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.8717140555381775,
+            "neutral": 0.11716322600841522,
+            "contradiction": 0.011122682131826878
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Invasion_literature",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 224979,
+      "claim": "Kentucky is known for the Kentucky Derby.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": true,
+      "confidence": 0.981776,
+      "decision_basis": "all_evidence_pairs_predicted_neutral",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 0,
+          "text": "Kentucky -LRB- -LSB- k\u0259n\u02c8t\u028cki -RSB- , -RRB- , officially the Commonwealth of Kentucky , is a state located in the east south-central region of the United States .\tstate\tU.S. state\teast south-central region\tEast South Central States\tUnited States\tUnited States",
+          "bm25_score": -12.046812929690779
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 6,
+          "text": "Kentucky is known as the `` Bluegrass State '' , a nickname based on the bluegrass found in many of its pastures due to the fertile soil .\tbluegrass\tKentucky bluegrass",
+          "bm25_score": -25.559171334172955
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 11,
+          "text": "Kentucky is also known for horse racing , bourbon distilleries , coal , the historic site My Old Kentucky Home , automobile manufacturing , tobacco , bluegrass music , college basketball , and Kentucky Fried Chicken .\tMy Old Kentucky Home\tMy Old Kentucky Home State Park\tbluegrass\tKentucky bluegrass\thorse racing\thorse racing\tbourbon\tbourbon whiskey\tcoal\tcoal\tautomobile manufacturing\tautomobile manufacturing\ttobacco\ttobacco\tbluegrass music\tbluegrass music\tcollege basketball\tcollege basketball\tKentucky Fried Chicken\tKentucky Fried Chicken",
+          "bm25_score": -23.750218153156485
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 7,
+          "text": "One of the major regions in Kentucky is the Bluegrass Region in central Kentucky , which houses two of its major cities , Louisville and Lexington .\tLouisville\tLouisville, Kentucky\tLexington\tLexington, Kentucky",
+          "bm25_score": -23.687372479634362
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 2,
+          "text": "Originally a part of Virginia , in 1792 Kentucky became the 15th state to join the Union .\tVirginia\tVirginia\tstate\tU.S. state",
+          "bm25_score": -20.389324638891896
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 0,
+          "text": "Kentucky -LRB- -LSB- k\u0259n\u02c8t\u028cki -RSB- , -RRB- , officially the Commonwealth of Kentucky , is a state located in the east south-central region of the United States .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.22220875322818756,
+            "neutral": 0.7672159671783447,
+            "contradiction": 0.010575369000434875
+          }
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 6,
+          "text": "Kentucky is known as the `` Bluegrass State '' , a nickname based on the bluegrass found in many of its pastures due to the fertile soil .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.023473648354411125,
+            "neutral": 0.9551070928573608,
+            "contradiction": 0.02141920104622841
+          }
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 11,
+          "text": "Kentucky is also known for horse racing , bourbon distilleries , coal , the historic site My Old Kentucky Home , automobile manufacturing , tobacco , bluegrass music , college basketball , and Kentucky Fried Chicken .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.3902881443500519,
+            "neutral": 0.5904256105422974,
+            "contradiction": 0.019286252558231354
+          }
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 7,
+          "text": "One of the major regions in Kentucky is the Bluegrass Region in central Kentucky , which houses two of its major cities , Louisville and Lexington .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.043250568211078644,
+            "neutral": 0.9505885243415833,
+            "contradiction": 0.00616088230162859
+          }
+        },
+        {
+          "page_id": "Kentucky",
+          "sentence_id": 2,
+          "text": "Originally a part of Virginia , in 1792 Kentucky became the 15th state to join the Union .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.013670477084815502,
+            "neutral": 0.9817755222320557,
+            "contradiction": 0.004554043058305979
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 3584,
+      "claim": "Robert Palmer (writer) has written for the Illuminati.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": true,
+      "confidence": 0.992888,
+      "decision_basis": "all_evidence_pairs_predicted_neutral",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 0,
+          "text": "Robert Franklin Palmer Jr. -LRB- June 19 , 1945 -- November 20 , 1997 -RRB- was an American writer , musicologist , clarinetist , saxophonist , and blues producer .\tblues\tblues\tmusicologist\tmusicologist\tclarinetist\tclarinetist\tsaxophonist\tsaxophonist",
+          "bm25_score": -37.12950099810092
+        },
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 2,
+          "text": "A collection of his writings , Blues & Chaos : The Music Writing of Robert Palmer , edited by Anthony DeCurtis , was published by Simon & Schuster on November 10 , 2009 .\tAnthony DeCurtis\tAnthony DeCurtis\tSimon & Schuster\tSimon & Schuster",
+          "bm25_score": -48.101029845754596
+        },
+        {
+          "page_id": "The_Illuminati_Papers",
+          "sentence_id": 2,
+          "text": "Trilogy -LRB- written with Robert Shea -RRB- and most of the essays are written from the point of view of the characters in Illuminatus !\tRobert Shea\tRobert Shea",
+          "bm25_score": -34.35605064879463
+        },
+        {
+          "page_id": "Robert_Roswell_Palmer",
+          "sentence_id": 3,
+          "text": "Palmer also achieved distinction as a history text writer .",
+          "bm25_score": -31.852971313468903
+        },
+        {
+          "page_id": "Happiness_-LRB-Robert_Palmer_song-RRB-",
+          "sentence_id": 2,
+          "text": "The song was written solely by Palmer .",
+          "bm25_score": -31.158781868309198
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 0,
+          "text": "Robert Franklin Palmer Jr. -LRB- June 19 , 1945 -- November 20 , 1997 -RRB- was an American writer , musicologist , clarinetist , saxophonist , and blues producer .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.002544583985581994,
+            "neutral": 0.9928877949714661,
+            "contradiction": 0.00456769485026598
+          }
+        },
+        {
+          "page_id": "Robert_Palmer_-LRB-writer-RRB-",
+          "sentence_id": 2,
+          "text": "A collection of his writings , Blues & Chaos : The Music Writing of Robert Palmer , edited by Anthony DeCurtis , was published by Simon & Schuster on November 10 , 2009 .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.002730193780735135,
+            "neutral": 0.9830400347709656,
+            "contradiction": 0.014229705557227135
+          }
+        },
+        {
+          "page_id": "The_Illuminati_Papers",
+          "sentence_id": 2,
+          "text": "Trilogy -LRB- written with Robert Shea -RRB- and most of the essays are written from the point of view of the characters in Illuminatus !",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.07514099776744843,
+            "neutral": 0.8456450700759888,
+            "contradiction": 0.07921388745307922
+          }
+        },
+        {
+          "page_id": "Robert_Roswell_Palmer",
+          "sentence_id": 3,
+          "text": "Palmer also achieved distinction as a history text writer .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0031178658828139305,
+            "neutral": 0.987060546875,
+            "contradiction": 0.009821683168411255
+          }
+        },
+        {
+          "page_id": "Happiness_-LRB-Robert_Palmer_song-RRB-",
+          "sentence_id": 2,
+          "text": "The song was written solely by Palmer .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0031470598187297583,
+            "neutral": 0.9915525317192078,
+            "contradiction": 0.005300430115312338
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 128071,
+      "claim": "The horse started to become domesticated around 4000 BC.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.992037,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Horse",
+        "sentence_id": 3,
+        "text": "Humans began to domesticate horses around 4000 BC , and their domestication is believed to have been widespread by 3000 BC .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.992037296295166,
+          "neutral": 0.007111696992069483,
+          "contradiction": 0.0008510085172019899
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Horse",
+        "sentence_id": 3,
+        "text": "Humans began to domesticate horses around 4000 BC , and their domestication is believed to have been widespread by 3000 BC .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.992037296295166,
+          "neutral": 0.007111696992069483,
+          "contradiction": 0.0008510085172019899
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "HORSE",
+          "sentence_id": 0,
+          "text": "H.O.R.S.E. is a form of poker commonly played at the high-stakes tables of casinos .\tpoker\tpoker",
+          "bm25_score": -13.308406082430098
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 0,
+          "text": "The horse -LRB- Equus ferus caballus -RRB- is one of two extant subspecies of Equus ferus .\textant\tExtant taxon\tsubspecies\tsubspecies",
+          "bm25_score": -13.308406082430098
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 3,
+          "text": "Humans began to domesticate horses around 4000 BC , and their domestication is believed to have been widespread by 3000 BC .\tdomesticate\tDomestication\tdomestication\tdomestication of the horse",
+          "bm25_score": -42.89197837919894
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 12,
+          "text": "Most domesticated horses begin training under saddle or in harness between the ages of two and four .\tsaddle\tsaddle\tharness\tHorse harness",
+          "bm25_score": -30.983333871015347
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 5,
+          "text": "These feral populations are not true wild horses , as this term is used to describe horses that have never been domesticated , such as the endangered Przewalski 's horse , a separate subspecies , and the only remaining true wild horse .\tsubspecies\tsubspecies\twild horse\twild horse",
+          "bm25_score": -29.762333784333208
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "HORSE",
+          "sentence_id": 0,
+          "text": "H.O.R.S.E. is a form of poker commonly played at the high-stakes tables of casinos .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01032297220081091,
+            "neutral": 0.9873616695404053,
+            "contradiction": 0.0023153165820986032
+          }
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 0,
+          "text": "The horse -LRB- Equus ferus caballus -RRB- is one of two extant subspecies of Equus ferus .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.012910271063446999,
+            "neutral": 0.9830931425094604,
+            "contradiction": 0.003996521234512329
+          }
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 3,
+          "text": "Humans began to domesticate horses around 4000 BC , and their domestication is believed to have been widespread by 3000 BC .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.992037296295166,
+            "neutral": 0.007111696992069483,
+            "contradiction": 0.0008510085172019899
+          }
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 12,
+          "text": "Most domesticated horses begin training under saddle or in harness between the ages of two and four .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01980816386640072,
+            "neutral": 0.9605929851531982,
+            "contradiction": 0.019598782062530518
+          }
+        },
+        {
+          "page_id": "Horse",
+          "sentence_id": 5,
+          "text": "These feral populations are not true wild horses , as this term is used to describe horses that have never been domesticated , such as the endangered Przewalski 's horse , a separate subspecies , and the only remaining true wild horse .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01800358109176159,
+            "neutral": 0.8806312680244446,
+            "contradiction": 0.10136518627405167
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Horse",
+            3
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 120461,
+      "claim": "Global warming is expected to be greatest in the Caribbean.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.917947,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Global_warming",
+        "sentence_id": 13,
+        "text": "Warming is expected to be greater over land than over the oceans and greatest in the Arctic , with the continuing retreat of glaciers , permafrost and sea ice .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.009918279945850372,
+          "neutral": 0.07213446497917175,
+          "contradiction": 0.9179472923278809
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Global_warming",
+        "sentence_id": 13,
+        "text": "Warming is expected to be greater over land than over the oceans and greatest in the Arctic , with the continuing retreat of glaciers , permafrost and sea ice .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.009918279945850372,
+          "neutral": 0.07213446497917175,
+          "contradiction": 0.9179472923278809
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 0,
+          "text": "Global warming , also referred to as climate change , is the observed century-scale rise in the average temperature of the Earth 's climate system and its related effects .\tEarth\tEarth\tclimate system\tclimate\teffects\teffects of global warming",
+          "bm25_score": -31.37650934846242
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 26,
+          "text": "Public reactions to global warming and concern about its effects are also increasing .\teffects\teffects of global warming",
+          "bm25_score": -58.49379928655777
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 12,
+          "text": "Anticipated effects include warming global temperature , rising sea levels , changing precipitation , and expansion of deserts in the subtropics .\teffects\teffects of global warming\trising sea levels\tsea level rise\tprecipitation\tprecipitation (meteorology)\tsubtropics\tsubtropics",
+          "bm25_score": -52.23849097371043
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 19,
+          "text": "Possible societal responses to global warming include mitigation by emissions reduction , adaptation to its effects , building systems resilient to its effects , and possible future climate engineering .\teffects\teffects of global warming\tmitigation\tClimate change mitigation\tadaptation\tadaptation to global warming\tresilient\tclimate resilience\tclimate engineering\tclimate engineering",
+          "bm25_score": -51.59613794506442
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 13,
+          "text": "Warming is expected to be greater over land than over the oceans and greatest in the Arctic , with the continuing retreat of glaciers , permafrost and sea ice .\tgreatest in the Arctic\tArctic shrinkage\tretreat of glaciers\tretreat of glaciers since 1850\tpermafrost\tpermafrost\tsea ice\tsea ice",
+          "bm25_score": -50.72933190118179
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 0,
+          "text": "Global warming , also referred to as climate change , is the observed century-scale rise in the average temperature of the Earth 's climate system and its related effects .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0021561388857662678,
+            "neutral": 0.9956687688827515,
+            "contradiction": 0.002174995606765151
+          }
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 26,
+          "text": "Public reactions to global warming and concern about its effects are also increasing .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0012093548430129886,
+            "neutral": 0.9974410533905029,
+            "contradiction": 0.0013495318125933409
+          }
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 12,
+          "text": "Anticipated effects include warming global temperature , rising sea levels , changing precipitation , and expansion of deserts in the subtropics .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0038432555738836527,
+            "neutral": 0.9802162051200867,
+            "contradiction": 0.01594056561589241
+          }
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 19,
+          "text": "Possible societal responses to global warming include mitigation by emissions reduction , adaptation to its effects , building systems resilient to its effects , and possible future climate engineering .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0011922114063054323,
+            "neutral": 0.997318685054779,
+            "contradiction": 0.0014890673337504268
+          }
+        },
+        {
+          "page_id": "Global_warming",
+          "sentence_id": 13,
+          "text": "Warming is expected to be greater over land than over the oceans and greatest in the Arctic , with the continuing retreat of glaciers , permafrost and sea ice .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.009918279945850372,
+            "neutral": 0.07213446497917175,
+            "contradiction": 0.9179472923278809
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Global_warming",
+            13
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 212333,
+      "claim": "On June 13th, 1986, Mary-Kate Olsen and Ashley Olsen were born.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.997022,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Mary-Kate_and_Ashley_Olsen",
+        "sentence_id": 0,
+        "text": "Mary-Kate Olsen and Ashley Olsen -LRB- born June 13 , 1986 -RRB- , also known as the Olsen twins collectively , are American fashion designers and former child actresses .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9970220923423767,
+          "neutral": 0.002379279350861907,
+          "contradiction": 0.0005987037438899279
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Mary-Kate_and_Ashley_Olsen",
+        "sentence_id": 0,
+        "text": "Mary-Kate Olsen and Ashley Olsen -LRB- born June 13 , 1986 -RRB- , also known as the Olsen twins collectively , are American fashion designers and former child actresses .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.9970220923423767,
+          "neutral": 0.002379279350861907,
+          "contradiction": 0.0005987037438899279
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 0,
+          "text": "Mary-Kate Olsen -LRB- born June 13 , 1986 -RRB- is an American actress , fashion designer , producer , author , businesswoman , and equestrian .\tfashion designer\tfashion designer",
+          "bm25_score": -43.57705348300964
+        },
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 1,
+          "text": "She co-founded luxury fashion brands The Row , Elizabeth and James , and the more affordable lines Olsenboye and StyleMint alongside her fraternal twin sister Ashley Olsen .\tAshley Olsen\tAshley Olsen\tThe Row\tThe Row (fashion label)",
+          "bm25_score": -67.70248928087157
+        },
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 3,
+          "text": "She is an older sister of actress Elizabeth Olsen .\tElizabeth Olsen\tElizabeth Olsen",
+          "bm25_score": -62.1573229908256
+        },
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 2,
+          "text": "Olsen pursued acting independently as an adult until 2012 .",
+          "bm25_score": -59.28280657051184
+        },
+        {
+          "page_id": "Mary-Kate_and_Ashley_Olsen",
+          "sentence_id": 0,
+          "text": "Mary-Kate Olsen and Ashley Olsen -LRB- born June 13 , 1986 -RRB- , also known as the Olsen twins collectively , are American fashion designers and former child actresses .\tAshley\tAshley Olsen\tMary-Kate\tMary-Kate Olsen\tMary-Kate Olsen\tMary-Kate Olsen\tAshley Olsen\tAshley Olsen",
+          "bm25_score": -68.36610285432897
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 0,
+          "text": "Mary-Kate Olsen -LRB- born June 13 , 1986 -RRB- is an American actress , fashion designer , producer , author , businesswoman , and equestrian .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.19663801789283752,
+            "neutral": 0.7733770608901978,
+            "contradiction": 0.02998499572277069
+          }
+        },
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 1,
+          "text": "She co-founded luxury fashion brands The Row , Elizabeth and James , and the more affordable lines Olsenboye and StyleMint alongside her fraternal twin sister Ashley Olsen .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.060820553451776505,
+            "neutral": 0.9311525225639343,
+            "contradiction": 0.008026905357837677
+          }
+        },
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 3,
+          "text": "She is an older sister of actress Elizabeth Olsen .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.029660170897841454,
+            "neutral": 0.9477949738502502,
+            "contradiction": 0.02254483476281166
+          }
+        },
+        {
+          "page_id": "Mary-Kate_Olsen",
+          "sentence_id": 2,
+          "text": "Olsen pursued acting independently as an adult until 2012 .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.014924930408596992,
+            "neutral": 0.9778305888175964,
+            "contradiction": 0.007244546432048082
+          }
+        },
+        {
+          "page_id": "Mary-Kate_and_Ashley_Olsen",
+          "sentence_id": 0,
+          "text": "Mary-Kate Olsen and Ashley Olsen -LRB- born June 13 , 1986 -RRB- , also known as the Olsen twins collectively , are American fashion designers and former child actresses .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.9970220923423767,
+            "neutral": 0.002379279350861907,
+            "contradiction": 0.0005987037438899279
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Mary-Kate_and_Ashley_Olsen",
+            0
+          ]
+        ],
+        [
+          [
+            "Mary-Kate_and_Ashley_Olsen",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 103060,
+      "claim": "Mohra got nine nominations from a magazine in the nineteen nineties.",
+      "gold_label": "SUPPORTS",
+      "predicted_label": "SUPPORTS",
+      "correct": true,
+      "confidence": 0.786354,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Mohra",
+        "sentence_id": 4,
+        "text": "The film got nine Filmfare nominations in 1995 .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.7863543033599854,
+          "neutral": 0.20861582458019257,
+          "contradiction": 0.005029946565628052
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Mohra",
+        "sentence_id": 4,
+        "text": "The film got nine Filmfare nominations in 1995 .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.7863543033599854,
+          "neutral": 0.20861582458019257,
+          "contradiction": 0.005029946565628052
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Mohra",
+          "sentence_id": 0,
+          "text": "Mohra -LRB- Pawn -RRB- is a 1994 Indian action thriller film directed by Rajiv Rai starring Akshay Kumar , Sunil Shetty , Raveena Tandon and Naseeruddin Shah in the lead roles with Paresh Rawal , Gulshan Grover , Raza Murad and Sadashiv Amrapurkar in supporting roles .\tRajiv Rai\tRajiv Rai\tAkshay Kumar\tAkshay Kumar\tRaveena Tandon\tRaveena Tandon\tNaseeruddin Shah\tNaseeruddin Shah\tParesh Rawal\tParesh Rawal\tGulshan Grover\tGulshan Grover\taction thriller\taction thriller\tSunil Shetty\tSunil Shetty\tRaza Murad\tRaza Murad\tSadashiv Amrapurkar\tSadashiv Amrapurkar",
+          "bm25_score": -16.93658475056732
+        },
+        {
+          "page_id": "Mohra",
+          "sentence_id": 4,
+          "text": "The film got nine Filmfare nominations in 1995 .\tFilmfare\tFilmfare",
+          "bm25_score": -51.80102249357874
+        },
+        {
+          "page_id": "Ten_Million_Years_\u2013_Songs_from_the_Nineteen_Nineties",
+          "sentence_id": 0,
+          "text": "Ten Million Years -- Songs from the Nineteen Nineties is an album by alternative rock artist Paul Durham .\tPaul Durham\tPaul Durham\talbum\talbum\talternative rock\talternative rock",
+          "bm25_score": -33.61232784731836
+        },
+        {
+          "page_id": "The_Nineties_at_Nine",
+          "sentence_id": 10,
+          "text": "Category : American music radio programs",
+          "bm25_score": -32.059461473225674
+        },
+        {
+          "page_id": "The_Nineties_at_Nine",
+          "sentence_id": 7,
+          "text": "The Nineties at Nine alternatively can be heard at 8pm in some markets .",
+          "bm25_score": -31.41582565888583
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Mohra",
+          "sentence_id": 0,
+          "text": "Mohra -LRB- Pawn -RRB- is a 1994 Indian action thriller film directed by Rajiv Rai starring Akshay Kumar , Sunil Shetty , Raveena Tandon and Naseeruddin Shah in the lead roles with Paresh Rawal , Gulshan Grover , Raza Murad and Sadashiv Amrapurkar in supporting roles .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.05824282020330429,
+            "neutral": 0.9328781366348267,
+            "contradiction": 0.008879040367901325
+          }
+        },
+        {
+          "page_id": "Mohra",
+          "sentence_id": 4,
+          "text": "The film got nine Filmfare nominations in 1995 .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.7863543033599854,
+            "neutral": 0.20861582458019257,
+            "contradiction": 0.005029946565628052
+          }
+        },
+        {
+          "page_id": "Ten_Million_Years_\u2013_Songs_from_the_Nineteen_Nineties",
+          "sentence_id": 0,
+          "text": "Ten Million Years -- Songs from the Nineteen Nineties is an album by alternative rock artist Paul Durham .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.008114922791719437,
+            "neutral": 0.9884195327758789,
+            "contradiction": 0.0034655516501516104
+          }
+        },
+        {
+          "page_id": "The_Nineties_at_Nine",
+          "sentence_id": 10,
+          "text": "Category : American music radio programs",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.00035484586260281503,
+            "neutral": 0.999325156211853,
+            "contradiction": 0.0003199292114004493
+          }
+        },
+        {
+          "page_id": "The_Nineties_at_Nine",
+          "sentence_id": 7,
+          "text": "The Nineties at Nine alternatively can be heard at 8pm in some markets .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.015053080394864082,
+            "neutral": 0.9815069437026978,
+            "contradiction": 0.0034399088472127914
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Filmfare",
+            0
+          ],
+          [
+            "Mohra",
+            4
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 201810,
+      "claim": "Dakota Fanning was involved with a film called Jane in The Twilight Saga.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "SUPPORTS",
+      "correct": false,
+      "confidence": 0.837705,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Dakota_Fanning",
+        "sentence_id": 6,
+        "text": "Her recent film roles have included the eponymous character in Coraline -LRB- 2009 -RRB- , Cherie Currie in The Runaways -LRB- 2010 -RRB- , Annie James in The Motel Life -LRB- 2013 -RRB- , and Jane in The Twilight Saga -LRB- 2009 -- 12 -RRB- .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.8377050757408142,
+          "neutral": 0.15128834545612335,
+          "contradiction": 0.011006510816514492
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Dakota_Fanning",
+        "sentence_id": 6,
+        "text": "Her recent film roles have included the eponymous character in Coraline -LRB- 2009 -RRB- , Cherie Currie in The Runaways -LRB- 2010 -RRB- , Annie James in The Motel Life -LRB- 2013 -RRB- , and Jane in The Twilight Saga -LRB- 2009 -- 12 -RRB- .",
+        "predicted_relation": "entailment",
+        "predicted_verdict": "SUPPORTS",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.8377050757408142,
+          "neutral": 0.15128834545612335,
+          "contradiction": 0.011006510816514492
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 0,
+          "text": "Hannah Dakota Fanning -LRB- born February 23 , 1994 -RRB- is an American actress and model .",
+          "bm25_score": -34.606274271589726
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 6,
+          "text": "Her recent film roles have included the eponymous character in Coraline -LRB- 2009 -RRB- , Cherie Currie in The Runaways -LRB- 2010 -RRB- , Annie James in The Motel Life -LRB- 2013 -RRB- , and Jane in The Twilight Saga -LRB- 2009 -- 12 -RRB- .\teponymous character\tCoraline\tCoraline\tCoraline (film)\tCherie Currie\tCherie Currie\tThe Runaways\tThe Runaways (film)\tThe Motel Life\tThe Motel Life (film)\tThe Twilight Saga\tThe Twilight Saga (film series)",
+          "bm25_score": -57.298843324222176
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 9,
+          "text": "Although the focus of Fanning 's career is acting , she also has fashion-related jobs .",
+          "bm25_score": -47.23069826319623
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 5,
+          "text": "Fanning then began to transition to more adult roles with Hounddog -LRB- 2007 -RRB- and The Secret Life of Bees -LRB- 2008 -RRB- .\tHounddog\tHounddog (film)",
+          "bm25_score": -47.0918155454728
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 2,
+          "text": "Thereafter , Fanning received additional recognition for appearances in the films Uptown Girls -LRB- 2003 -RRB- , The Cat in the Hat -LRB- 2003 -RRB- , Man on Fire -LRB- 2004 -RRB- , War of the Worlds -LRB- 2005 -RRB- , Dreamer -LRB- 2005 -RRB- , and Charlotte 's Web -LRB- 2006 -RRB- .\tUptown Girls\tUptown Girls\tThe Cat in the Hat\tThe Cat in the Hat (film)\tMan on Fire\tMan on Fire (2004 film)\tWar of the Worlds\tWar of the Worlds (2005 film)\tDreamer\tDreamer (2005 film)",
+          "bm25_score": -35.68378769057561
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 0,
+          "text": "Hannah Dakota Fanning -LRB- born February 23 , 1994 -RRB- is an American actress and model .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.010477717965841293,
+            "neutral": 0.9733317494392395,
+            "contradiction": 0.016190512105822563
+          }
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 6,
+          "text": "Her recent film roles have included the eponymous character in Coraline -LRB- 2009 -RRB- , Cherie Currie in The Runaways -LRB- 2010 -RRB- , Annie James in The Motel Life -LRB- 2013 -RRB- , and Jane in The Twilight Saga -LRB- 2009 -- 12 -RRB- .",
+          "predicted_relation": "entailment",
+          "predicted_verdict": "SUPPORTS",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.8377050757408142,
+            "neutral": 0.15128834545612335,
+            "contradiction": 0.011006510816514492
+          }
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 9,
+          "text": "Although the focus of Fanning 's career is acting , she also has fashion-related jobs .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.006848358083516359,
+            "neutral": 0.987021267414093,
+            "contradiction": 0.0061303600668907166
+          }
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 5,
+          "text": "Fanning then began to transition to more adult roles with Hounddog -LRB- 2007 -RRB- and The Secret Life of Bees -LRB- 2008 -RRB- .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0056671989150345325,
+            "neutral": 0.9771761894226074,
+            "contradiction": 0.017156625166535378
+          }
+        },
+        {
+          "page_id": "Dakota_Fanning",
+          "sentence_id": 2,
+          "text": "Thereafter , Fanning received additional recognition for appearances in the films Uptown Girls -LRB- 2003 -RRB- , The Cat in the Hat -LRB- 2003 -RRB- , Man on Fire -LRB- 2004 -RRB- , War of the Worlds -LRB- 2005 -RRB- , Dreamer -LRB- 2005 -RRB- , and Charlotte 's Web -LRB- 2006 -RRB- .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.00665214704349637,
+            "neutral": 0.9782930016517639,
+            "contradiction": 0.015054951421916485
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 200374,
+      "claim": "Tom DeLonge formed a band in Nebraska.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "REFUTES",
+      "correct": false,
+      "confidence": 0.87925,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Tom_DeLonge",
+        "sentence_id": 2,
+        "text": "DeLonge grew up in the suburbs of Poway , California , where he embraced skateboarding at an early age .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.005507015623152256,
+          "neutral": 0.11524275690317154,
+          "contradiction": 0.8792502284049988
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Tom_DeLonge",
+        "sentence_id": 2,
+        "text": "DeLonge grew up in the suburbs of Poway , California , where he embraced skateboarding at an early age .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.005507015623152256,
+          "neutral": 0.11524275690317154,
+          "contradiction": 0.8792502284049988
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 0,
+          "text": "Thomas Matthew `` Tom '' DeLonge , Jr. -LRB- born December 13 , 1975 -RRB- , is an American musician , singer , songwriter , record producer , entrepreneur , and film producer .",
+          "bm25_score": -36.807003762277205
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 11,
+          "text": "DeLonge experimented with post-hardcore music on Box Car Racer , which formed into a full-fledged band in 2002 , but dissolved the following year .\tpost-hardcore\tpost-hardcore\tBox Car Racer\tBox Car Racer (album)",
+          "bm25_score": -54.26691217537422
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 16,
+          "text": "DeLonge reunited with Blink-182 in 2009 , releasing new music and touring frequently , before parting ways with the band again in 2015 .\tBlink-182\tBlink-182",
+          "bm25_score": -52.94433479613309
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 3,
+          "text": "DeLonge received his first guitar shortly thereafter and began writing original punk rock songs .\tpunk rock\tpunk rock",
+          "bm25_score": -51.70347538410648
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 2,
+          "text": "DeLonge grew up in the suburbs of Poway , California , where he embraced skateboarding at an early age .\tskateboarding\tskateboarding",
+          "bm25_score": -51.27699811224578
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 0,
+          "text": "Thomas Matthew `` Tom '' DeLonge , Jr. -LRB- born December 13 , 1975 -RRB- , is an American musician , singer , songwriter , record producer , entrepreneur , and film producer .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.022712543606758118,
+            "neutral": 0.9672613739967346,
+            "contradiction": 0.010026121512055397
+          }
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 11,
+          "text": "DeLonge experimented with post-hardcore music on Box Car Racer , which formed into a full-fledged band in 2002 , but dissolved the following year .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.010214872658252716,
+            "neutral": 0.9846621751785278,
+            "contradiction": 0.005122917238622904
+          }
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 16,
+          "text": "DeLonge reunited with Blink-182 in 2009 , releasing new music and touring frequently , before parting ways with the band again in 2015 .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0075480700470507145,
+            "neutral": 0.9822703003883362,
+            "contradiction": 0.010181540623307228
+          }
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 3,
+          "text": "DeLonge received his first guitar shortly thereafter and began writing original punk rock songs .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.011563166044652462,
+            "neutral": 0.9854073524475098,
+            "contradiction": 0.003029566491022706
+          }
+        },
+        {
+          "page_id": "Tom_DeLonge",
+          "sentence_id": 2,
+          "text": "DeLonge grew up in the suburbs of Poway , California , where he embraced skateboarding at an early age .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.005507015623152256,
+            "neutral": 0.11524275690317154,
+            "contradiction": 0.8792502284049988
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 110339,
+      "claim": "Connie Nielsen played the role of Julius Caesar.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": true,
+      "confidence": 0.987518,
+      "decision_basis": "unrelated_entity_contradictions_ignored",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Connie_Nielsen",
+          "sentence_id": 0,
+          "text": "Connie Inge-Lise Nielsen -LRB- born 3 July 1965 -RRB- is a Danish actress whose first major role in an English language film was a supporting role in The Devil 's Advocate -LRB- 1997 -RRB- ; Nielsen later gained international attention for her role in Ridley Scott 's Gladiator -LRB- 2000 -RRB- .\tRidley Scott\tRidley Scott\tGladiator\tGladiator (2000 film)",
+          "bm25_score": -28.801268606088435
+        },
+        {
+          "page_id": "Julius_Caesar_-LRB-1950_film-RRB-",
+          "sentence_id": 4,
+          "text": "Bradley himself played Brutus , and Harold Tasker had the title role .\tBrutus\tMarcus Junius Brutus",
+          "bm25_score": -40.633405585940665
+        },
+        {
+          "page_id": "Chris_Stills",
+          "sentence_id": 36,
+          "text": "Chris played in France in 2009 the role of Julius Caesar in the musical .\tJulius Caesar\tJulius Caesar",
+          "bm25_score": -38.10303835285558
+        },
+        {
+          "page_id": "List_of_Roman_Republican_holders_of_the_role_of_pontifex_maximus",
+          "sentence_id": 64,
+          "text": "63 BC - Julius Caesar\tJulius Caesar\tJulius Caesar",
+          "bm25_score": -37.5959771747454
+        },
+        {
+          "page_id": "Julius_Caesar",
+          "sentence_id": 1,
+          "text": "He played a critical role in the events that led to the demise of the Roman Republic and the rise of the Roman Empire .\tRoman Republic\tRoman Republic\tRoman\tAncient Rome\tRoman Empire\tRoman Empire",
+          "bm25_score": -36.083998112972075
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Connie_Nielsen",
+          "sentence_id": 0,
+          "text": "Connie Inge-Lise Nielsen -LRB- born 3 July 1965 -RRB- is a Danish actress whose first major role in an English language film was a supporting role in The Devil 's Advocate -LRB- 1997 -RRB- ; Nielsen later gained international attention for her role in Ridley Scott 's Gladiator -LRB- 2000 -RRB- .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.003956712316721678,
+            "neutral": 0.9045179486274719,
+            "contradiction": 0.09152530133724213
+          }
+        },
+        {
+          "page_id": "Julius_Caesar_-LRB-1950_film-RRB-",
+          "sentence_id": 4,
+          "text": "Bradley himself played Brutus , and Harold Tasker had the title role .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.004319640342146158,
+            "neutral": 0.9217307567596436,
+            "contradiction": 0.07394953072071075
+          }
+        },
+        {
+          "page_id": "Chris_Stills",
+          "sentence_id": 36,
+          "text": "Chris played in France in 2009 the role of Julius Caesar in the musical .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": false,
+          "exclusion_reason": "evidence_does_not_identify_claim_subject",
+          "probabilities": {
+            "entailment": 0.016399376094341278,
+            "neutral": 0.3449702858924866,
+            "contradiction": 0.6386303305625916
+          }
+        },
+        {
+          "page_id": "List_of_Roman_Republican_holders_of_the_role_of_pontifex_maximus",
+          "sentence_id": 64,
+          "text": "63 BC - Julius Caesar",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0014248259831219912,
+            "neutral": 0.9875178933143616,
+            "contradiction": 0.01105736568570137
+          }
+        },
+        {
+          "page_id": "Julius_Caesar",
+          "sentence_id": 1,
+          "text": "He played a critical role in the events that led to the demise of the Roman Republic and the rise of the Roman Empire .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.020671481266617775,
+            "neutral": 0.961441159248352,
+            "contradiction": 0.017887402325868607
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 51126,
+      "claim": "Prescott, Arizona is outside of Yavapai County.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.968339,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Prescott,_Arizona",
+        "sentence_id": 11,
+        "text": "Prescott is the center of the Prescott Metropolitan Area , defined by the U.S. Census Bureau as all of Yavapai County .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.015264981426298618,
+          "neutral": 0.01639614999294281,
+          "contradiction": 0.9683388471603394
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Prescott,_Arizona",
+        "sentence_id": 0,
+        "text": "Prescott -LRB- -LSB- \u02c8pr\u025bsk\u0259t -RSB- ; \u02bcWi : kwatha Ksik\u02bcita -RRB- is a city in Yavapai County , Arizona , United States .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.01992148719727993,
+          "neutral": 0.015540284104645252,
+          "contradiction": 0.9645382165908813
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 0,
+          "text": "Prescott -LRB- -LSB- \u02c8pr\u025bsk\u0259t -RSB- ; \u02bcWi : kwatha Ksik\u02bcita -RRB- is a city in Yavapai County , Arizona , United States .\tYavapai County\tYavapai County, Arizona\tArizona\tArizona\tCounty\tList of counties in Arizona\tUnited States\tUnited States\tYavapai\tYavapai County, Arizona\tcity\tcity",
+          "bm25_score": -29.130615875773266
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 11,
+          "text": "Prescott is the center of the Prescott Metropolitan Area , defined by the U.S. Census Bureau as all of Yavapai County .\tYavapai County\tYavapai County, Arizona\tCounty\tList of counties in Arizona\tYavapai\tYavapai County, Arizona",
+          "bm25_score": -76.22242005770799
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 14,
+          "text": "The Yavapai-Prescott Indian Tribe reservation is located adjacent to and partially within the borders of Prescott .\tYavapai\tYavapai County, Arizona\tYavapai-Prescott Indian Tribe\tYavapai-Prescott Indian Tribe",
+          "bm25_score": -75.92259356666118
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 2,
+          "text": "The city is the county seat of Yavapai County .\tYavapai County\tYavapai County, Arizona\tCounty\tList of counties in Arizona\tYavapai\tYavapai County, Arizona\tcity\tcity\tcounty seat\tcounty seat",
+          "bm25_score": -66.79388514506275
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 9,
+          "text": "This also sometimes refers to central Yavapai County in general , which would include the towns of : Mayer , Paulden , Wilhoit , and Williamson Valley .\tYavapai County\tYavapai County, Arizona\tCounty\tList of counties in Arizona\tYavapai\tYavapai County, Arizona\tMayer\tMayer, Arizona\tPaulden\tPaulden\tWilhoit\tWilhoit, Arizona",
+          "bm25_score": -62.920458471713125
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 0,
+          "text": "Prescott -LRB- -LSB- \u02c8pr\u025bsk\u0259t -RSB- ; \u02bcWi : kwatha Ksik\u02bcita -RRB- is a city in Yavapai County , Arizona , United States .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01992148719727993,
+            "neutral": 0.015540284104645252,
+            "contradiction": 0.9645382165908813
+          }
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 11,
+          "text": "Prescott is the center of the Prescott Metropolitan Area , defined by the U.S. Census Bureau as all of Yavapai County .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.015264981426298618,
+            "neutral": 0.01639614999294281,
+            "contradiction": 0.9683388471603394
+          }
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 14,
+          "text": "The Yavapai-Prescott Indian Tribe reservation is located adjacent to and partially within the borders of Prescott .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.024429041892290115,
+            "neutral": 0.06680455803871155,
+            "contradiction": 0.9087663888931274
+          }
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 2,
+          "text": "The city is the county seat of Yavapai County .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.016370121389627457,
+            "neutral": 0.23268388211727142,
+            "contradiction": 0.7509459853172302
+          }
+        },
+        {
+          "page_id": "Prescott,_Arizona",
+          "sentence_id": 9,
+          "text": "This also sometimes refers to central Yavapai County in general , which would include the towns of : Mayer , Paulden , Wilhoit , and Williamson Valley .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.03187840059399605,
+            "neutral": 0.6276095509529114,
+            "contradiction": 0.3405120074748993
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Prescott,_Arizona",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 184067,
+      "claim": "Kenneth Lonergan was born March 16, 1962.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.913739,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Kenneth_Lonergan",
+        "sentence_id": 0,
+        "text": "Kenneth Lonergan -LRB- born October 16 , 1962 -RRB- is an American playwright , screenwriter , and director .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.05401299148797989,
+          "neutral": 0.0322481133043766,
+          "contradiction": 0.9137388467788696
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Kenneth_Lonergan",
+        "sentence_id": 0,
+        "text": "Kenneth Lonergan -LRB- born October 16 , 1962 -RRB- is an American playwright , screenwriter , and director .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.05401299148797989,
+          "neutral": 0.0322481133043766,
+          "contradiction": 0.9137388467788696
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Kenneth_Lonergan",
+          "sentence_id": 0,
+          "text": "Kenneth Lonergan -LRB- born October 16 , 1962 -RRB- is an American playwright , screenwriter , and director .",
+          "bm25_score": -37.765867732594785
+        },
+        {
+          "page_id": "Lonergan_-LRB-surname-RRB-",
+          "sentence_id": 22,
+          "text": "Kenneth Lonergan -LRB- born 1962 -RRB- , New York playwright , screenwriter , and director\tKenneth Lonergan\tKenneth Lonergan",
+          "bm25_score": -45.33437812032923
+        },
+        {
+          "page_id": "Lobby_Hero",
+          "sentence_id": 0,
+          "text": "Lobby Hero is a play by Kenneth Lonergan .\tKenneth Lonergan\tKenneth Lonergan",
+          "bm25_score": -33.26702675804849
+        },
+        {
+          "page_id": "The_Waverley_Gallery",
+          "sentence_id": 0,
+          "text": "The Waverly Gallery is a play by Kenneth Lonergan .\tKenneth Lonergan\tKenneth Lonergan",
+          "bm25_score": -32.711078671833675
+        },
+        {
+          "page_id": "Kenneth_Lonergan",
+          "sentence_id": 1,
+          "text": "He is best known for writing Gangs of New York -LRB- 2002 -RRB- and for writing and directing Manchester by the Sea -LRB- 2016 -RRB- .\tGangs of New York\tGangs of New York\tManchester by the Sea\tManchester by the Sea (film)",
+          "bm25_score": -30.994048401757638
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Kenneth_Lonergan",
+          "sentence_id": 0,
+          "text": "Kenneth Lonergan -LRB- born October 16 , 1962 -RRB- is an American playwright , screenwriter , and director .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.05401299148797989,
+            "neutral": 0.0322481133043766,
+            "contradiction": 0.9137388467788696
+          }
+        },
+        {
+          "page_id": "Lonergan_-LRB-surname-RRB-",
+          "sentence_id": 22,
+          "text": "Kenneth Lonergan -LRB- born 1962 -RRB- , New York playwright , screenwriter , and director",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.009420603513717651,
+            "neutral": 0.9896755814552307,
+            "contradiction": 0.0009038186981342733
+          }
+        },
+        {
+          "page_id": "Lobby_Hero",
+          "sentence_id": 0,
+          "text": "Lobby Hero is a play by Kenneth Lonergan .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01950080133974552,
+            "neutral": 0.9781543612480164,
+            "contradiction": 0.0023447845596820116
+          }
+        },
+        {
+          "page_id": "The_Waverley_Gallery",
+          "sentence_id": 0,
+          "text": "The Waverly Gallery is a play by Kenneth Lonergan .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.013788669370114803,
+            "neutral": 0.98371821641922,
+            "contradiction": 0.0024931184016168118
+          }
+        },
+        {
+          "page_id": "Kenneth_Lonergan",
+          "sentence_id": 1,
+          "text": "He is best known for writing Gangs of New York -LRB- 2002 -RRB- and for writing and directing Manchester by the Sea -LRB- 2016 -RRB- .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.013916200958192348,
+            "neutral": 0.9823862314224243,
+            "contradiction": 0.0036975343246012926
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Kenneth_Lonergan",
+            0
+          ]
+        ]
+      ]
+    },
+    {
+      "id": 90040,
+      "claim": "Anushka Sharma starred in Cloud Atlas.",
+      "gold_label": "NOT ENOUGH INFO",
+      "predicted_label": "NOT ENOUGH INFO",
+      "correct": true,
+      "confidence": 0.988065,
+      "decision_basis": "all_evidence_pairs_predicted_neutral",
+      "evidence_selection_basis": "no_decisive_evidence_pair",
+      "decision_evidence": null,
+      "selected_evidence": null,
+      "retrieved_evidence": [
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 0,
+          "text": "Anushka Sharma -LRB- -LSB- \u0259\u02c8n\u028a\u0282ka\u02d0 \u02c8\u0283\u0259rma\u02d0 -RSB- ; born 1 May 1988 -RRB- is an Indian film actress , producer and model .",
+          "bm25_score": -40.16147000413036
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 14,
+          "text": "She and her brother , Karnesh Sharma are the founders of the production company Clean Slate Films .\tKarnesh Sharma\tKarnesh Sharma\tClean Slate Films\tClean Slate Films",
+          "bm25_score": -53.22953341852772
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 12,
+          "text": "In addition to acting in films , Sharma is the ambassador for multiple brands and products , and has an active social media presence .",
+          "bm25_score": -49.42429824736998
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 5,
+          "text": "Born in Ayodhya and raised in Bangalore , Sharma had her first modelling assignment for the fashion designer Wendell Rodricks in 2007 and later moved to Mumbai to pursue a full-time career as a model .\tAyodhya\tAyodhya\tBangalore\tBangalore\tWendell Rodricks\tWendell Rodricks\tMumbai\tMumbai",
+          "bm25_score": -42.60770841232625
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 9,
+          "text": "Sharma received critical praise for her performances in the 2015 crime thriller NH10 , which also marked her production debut , and the 2016 romantic drama Ae Dil Hai Mushkil , both of which earned her several awards and nominations .\tNH10\tNH10\tAe Dil Hai Mushkil\tAe Dil Hai Mushkil",
+          "bm25_score": -42.11950017916765
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 0,
+          "text": "Anushka Sharma -LRB- -LSB- \u0259\u02c8n\u028a\u0282ka\u02d0 \u02c8\u0283\u0259rma\u02d0 -RSB- ; born 1 May 1988 -RRB- is an Indian film actress , producer and model .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.035488829016685486,
+            "neutral": 0.9358290433883667,
+            "contradiction": 0.028682008385658264
+          }
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 14,
+          "text": "She and her brother , Karnesh Sharma are the founders of the production company Clean Slate Films .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.004778959788382053,
+            "neutral": 0.9880651831626892,
+            "contradiction": 0.007155882194638252
+          }
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 12,
+          "text": "In addition to acting in films , Sharma is the ambassador for multiple brands and products , and has an active social media presence .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01398898009210825,
+            "neutral": 0.9776272773742676,
+            "contradiction": 0.008383695967495441
+          }
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 5,
+          "text": "Born in Ayodhya and raised in Bangalore , Sharma had her first modelling assignment for the fashion designer Wendell Rodricks in 2007 and later moved to Mumbai to pursue a full-time career as a model .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.0066129183396697044,
+            "neutral": 0.9395137429237366,
+            "contradiction": 0.053873300552368164
+          }
+        },
+        {
+          "page_id": "Anushka_Sharma",
+          "sentence_id": 9,
+          "text": "Sharma received critical praise for her performances in the 2015 crime thriller NH10 , which also marked her production debut , and the 2016 romantic drama Ae Dil Hai Mushkil , both of which earned her several awards and nominations .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.01100721675902605,
+            "neutral": 0.9258819222450256,
+            "contradiction": 0.0631108209490776
+          }
+        }
+      ],
+      "gold_evidence_sets": []
+    },
+    {
+      "id": 199416,
+      "claim": "Filming for Boyhood was stopped between 2002 and 2013.",
+      "gold_label": "REFUTES",
+      "predicted_label": "REFUTES",
+      "correct": true,
+      "confidence": 0.826408,
+      "decision_basis": "strongest_non_neutral_evidence_pair",
+      "evidence_selection_basis": "earliest_retrieved_pair_agreeing_with_verdict",
+      "decision_evidence": {
+        "page_id": "Boyhood_-LRB-film-RRB-",
+        "sentence_id": 1,
+        "text": "Filmed from 2002 to 2013 , Boyhood depicts the childhood and adolescence of Mason Evans , Jr. -LRB- Coltrane -RRB- from ages six to eighteen as he grows up in Texas with divorced parents -LRB- Arquette and Hawke -RRB- .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.03766990080475807,
+          "neutral": 0.13592185080051422,
+          "contradiction": 0.8264082074165344
+        }
+      },
+      "selected_evidence": {
+        "page_id": "Richard_Linklater",
+        "sentence_id": 3,
+        "text": "In 2002 he began filming Boyhood -LRB- 2014 -RRB- , a passion project which took over twelve years to finish .",
+        "predicted_relation": "contradiction",
+        "predicted_verdict": "REFUTES",
+        "verdict_eligible": true,
+        "exclusion_reason": null,
+        "probabilities": {
+          "entailment": 0.021619604900479317,
+          "neutral": 0.19372418522834778,
+          "contradiction": 0.784656286239624
+        }
+      },
+      "retrieved_evidence": [
+        {
+          "page_id": "Richard_Linklater",
+          "sentence_id": 3,
+          "text": "In 2002 he began filming Boyhood -LRB- 2014 -RRB- , a passion project which took over twelve years to finish .\tBoyhood\tBoyhood (film)",
+          "bm25_score": -31.44179791758338
+        },
+        {
+          "page_id": "Boyhood_-LRB-film-RRB-",
+          "sentence_id": 5,
+          "text": "Production began in 2002 and finished in 2013 , with Linklater 's goal to make a film about growing up .",
+          "bm25_score": -30.336883627893393
+        },
+        {
+          "page_id": "T.C._Steele_Boyhood_Home",
+          "sentence_id": 3,
+          "text": "It was partially restored in 2002 .",
+          "bm25_score": -27.272212150471336
+        },
+        {
+          "page_id": "Boyhood_-LRB-film-RRB-",
+          "sentence_id": 1,
+          "text": "Filmed from 2002 to 2013 , Boyhood depicts the childhood and adolescence of Mason Evans , Jr. -LRB- Coltrane -RRB- from ages six to eighteen as he grows up in Texas with divorced parents -LRB- Arquette and Hawke -RRB- .\tTexas\tTexas",
+          "bm25_score": -26.748351661957482
+        },
+        {
+          "page_id": "T.C._Steele_Boyhood_Home",
+          "sentence_id": 2,
+          "text": "The house was renovated and enlarged between 1895 and 1902 .",
+          "bm25_score": -25.704342539499834
+        }
+      ],
+      "evidence_scores": [
+        {
+          "page_id": "Richard_Linklater",
+          "sentence_id": 3,
+          "text": "In 2002 he began filming Boyhood -LRB- 2014 -RRB- , a passion project which took over twelve years to finish .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.021619604900479317,
+            "neutral": 0.19372418522834778,
+            "contradiction": 0.784656286239624
+          }
+        },
+        {
+          "page_id": "Boyhood_-LRB-film-RRB-",
+          "sentence_id": 5,
+          "text": "Production began in 2002 and finished in 2013 , with Linklater 's goal to make a film about growing up .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.08916843682527542,
+            "neutral": 0.3100253939628601,
+            "contradiction": 0.6008061766624451
+          }
+        },
+        {
+          "page_id": "T.C._Steele_Boyhood_Home",
+          "sentence_id": 3,
+          "text": "It was partially restored in 2002 .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.011909833177924156,
+            "neutral": 0.9483605027198792,
+            "contradiction": 0.03972962871193886
+          }
+        },
+        {
+          "page_id": "Boyhood_-LRB-film-RRB-",
+          "sentence_id": 1,
+          "text": "Filmed from 2002 to 2013 , Boyhood depicts the childhood and adolescence of Mason Evans , Jr. -LRB- Coltrane -RRB- from ages six to eighteen as he grows up in Texas with divorced parents -LRB- Arquette and Hawke -RRB- .",
+          "predicted_relation": "contradiction",
+          "predicted_verdict": "REFUTES",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.03766990080475807,
+            "neutral": 0.13592185080051422,
+            "contradiction": 0.8264082074165344
+          }
+        },
+        {
+          "page_id": "T.C._Steele_Boyhood_Home",
+          "sentence_id": 2,
+          "text": "The house was renovated and enlarged between 1895 and 1902 .",
+          "predicted_relation": "neutral",
+          "predicted_verdict": "NOT ENOUGH INFO",
+          "verdict_eligible": true,
+          "exclusion_reason": null,
+          "probabilities": {
+            "entailment": 0.006426759529858828,
+            "neutral": 0.9907676577568054,
+            "contradiction": 0.0028055019211024046
+          }
+        }
+      ],
+      "gold_evidence_sets": [
+        [
+          [
+            "Boyhood_-LRB-film-RRB-",
+            1
+          ]
+        ]
+      ]
+    }
+  ]
+}
