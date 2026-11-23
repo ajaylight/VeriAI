@@ -21,9 +21,9 @@ app = FastAPI(
     version="0.4.0",
 )
 
-# Permit the local Vite development server to call this API from the browser.
-# Additional trusted frontend origins can be supplied as a comma-separated
-# VERIAI_CORS_ORIGINS environment variable.
+# Permit the local Vite development and production-preview servers to call
+# this API from the browser. Additional trusted origins can be supplied as a
+# comma-separated VERIAI_CORS_ORIGINS environment variable.
 configured_origins = [
     origin.strip()
     for origin in os.getenv("VERIAI_CORS_ORIGINS", "").split(",")
@@ -32,6 +32,8 @@ configured_origins = [
 allowed_origins = sorted(set(configured_origins + [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
+    "http://localhost:4173",
+    "http://127.0.0.1:4173",
 ]))
 app.add_middleware(
     CORSMiddleware,
