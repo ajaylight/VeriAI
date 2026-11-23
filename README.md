@@ -111,10 +111,23 @@ The report separates three-class classification metrics (accuracy, macro precisi
 
 Keep retrieval metrics, NLI metrics and end-to-end verification metrics separate. A test using gold FEVER evidence measures NLI with oracle evidence; it is not an end-to-end retrieval-and-verification score.
 
+## Run the React frontend
+
+Start the FastAPI backend in one terminal using the setup command above. In a second terminal, run:
+
+```cmd
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://127.0.0.1:5173. The frontend calls the local API at http://127.0.0.1:8000 by default. See [frontend/README.md](frontend/README.md) for configuration and production build instructions.
+
 ## Current implementation status
 - Claim extraction: implemented.
 - FEVER JSONL inspection: implemented.
 - Full-corpus BM25 retrieval with title-aware subject-page prioritization, date-prefix handling, and predicate-guided recovery from disambiguation pages: implemented; regression coverage added.
 - End-to-end FEVER retrieval-plus-NLI evaluation tooling: implemented; initial stratified 30-claim benchmark completed, larger evaluation pending.
 - Three-way NLI verifier and API integration: implemented; initial live model evaluation completed.
-- Dense retrieval, end-to-end evaluation and frontend: future milestones.
+- React + Vite frontend: implemented as a local verification interface; see `frontend/README.md`.
+- Dense retrieval and comparison against alternate retrieval architectures: future milestones.
