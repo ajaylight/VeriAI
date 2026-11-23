@@ -29,6 +29,32 @@ from app.services.wiki_index import DEFAULT_INDEX_PATH, open_index_connection, s
 LABELS = ("SUPPORTS", "REFUTES", "NOT ENOUGH INFO")
 
 
+def load_excluded_claim_ids(report_path: Path | None, split: str) -> set[str]:
+    """Load claim IDs from an earlier report to keep holdout claims disjoint."""
+    if report_path is None:
+        return set()
+    if not report_path.is_file():
+        raise FileNotFoundError(f"Exclusion report not found: {report_path}")
+
+    payload = json.loads(report_path.read_text(encoding="utf-8"))
+    if payload.get("split") != split:
+        raise ValueError(
+            f"Exclusion report split is {payload.get('split')!r}, expected {split!r}."
+        )
+    details = payload.get("claim_details")
+    if not isinstance(details, list):
+        raise ValueError("Exclusion report must contain a claim_details list.")
+
+    excluded_ids = {
+        str(item["id"])
+        for item in details
+        if isinstance(item, dict) and item.get("id") is not None
+    }
+    if not excluded_ids:
+        raise ValueError("Exclusion report contains no claim IDs to exclude.")
+    return excluded_ids
+
+
 def stratified_sample(
     records: list[dict[str, Any]],
     limit: int,
@@ -75,6 +101,7 @@ def load_evaluation_records(
     limit: int,
     seed: int,
     data_dir: Path = DEFAULT_FEVER_DIR,
+    excluded_ids: set[str] | None = None,
 ) -> tuple[int, list[dict[str, Any]]]:
     """Load labelled FEVER records and produce a deterministic stratified sample."""
     if split not in SPLIT_FILES:
@@ -86,7 +113,17 @@ def load_evaluation_records(
     ]
     if not records:
         raise ValueError(f"No labelled FEVER records found in {path}.")
-    return len(records), stratified_sample(records, limit, seed)
+
+    total_eligible = len(records)
+    excluded = excluded_ids or set()
+    if excluded:
+        records = [
+            record for record in records
+            if str(record.get("id")) not in excluded
+        ]
+    if not records:
+        raise ValueError("No labelled FEVER records remain after applying exclusions.")
+    return total_eligible, stratified_sample(records, limit, seed)
 
 
 def classification_metrics(
@@ -151,12 +188,16 @@ def run_evaluation(
     index_path: Path = DEFAULT_INDEX_PATH,
     data_dir: Path = DEFAULT_FEVER_DIR,
     verifier: Any | None = None,
+    exclude_report: Path | None = None,
 ) -> dict[str, Any]:
     """Run end-to-end retrieval and NLI classification on a FEVER sample."""
     if not 1 <= top_k <= 10:
         raise ValueError("top_k must be between 1 and 10.")
 
-    total_eligible, samples = load_evaluation_records(split, limit, seed, data_dir)
+    excluded_ids = load_excluded_claim_ids(exclude_report, split)
+    total_eligible, samples = load_evaluation_records(
+        split, limit, seed, data_dir, excluded_ids=excluded_ids
+    )
     if not samples:
         raise ValueError("No FEVER records selected for evaluation.")
 
@@ -231,10 +272,16 @@ def run_evaluation(
         "split": split,
         "dataset_file": SPLIT_FILES[split],
         "eligible_labelled_claims_in_split": total_eligible,
+        "excluded_claim_count": len(excluded_ids),
+        "eligible_claims_after_exclusion": total_eligible - len(excluded_ids),
+        "exclusion_report": str(exclude_report) if exclude_report else None,
         "evaluated_claims": len(samples),
         "sample_limit": limit,
         "random_seed": seed,
-        "sampling": "seeded_stratified_by_label",
+        "sampling": (
+            "seeded_stratified_by_label_excluding_reported_claims"
+            if exclude_report else "seeded_stratified_by_label"
+        ),
         "top_k": top_k,
         "retrieval_mode": "OR_FILTERED",
         "label_counts_in_sample": dict(sorted(label_counts.items())),
@@ -266,6 +313,12 @@ def main() -> None:
     parser.add_argument("--index", type=Path, default=DEFAULT_INDEX_PATH)
     parser.add_argument("--data-dir", type=Path, default=DEFAULT_FEVER_DIR)
     parser.add_argument("--output", type=Path, default=None)
+    parser.add_argument(
+        "--exclude-report",
+        type=Path,
+        default=None,
+        help="Exclude claim IDs already present in a prior evaluation JSON report.",
+    )
     parser.add_argument("--show-errors", action="store_true")
     args = parser.parse_args()
 
@@ -276,6 +329,7 @@ def main() -> None:
         top_k=args.top_k,
         index_path=args.index,
         data_dir=args.data_dir,
+        exclude_report=args.exclude_report,
     )
 
     metrics = report["classification_metrics"]
