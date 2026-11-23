@@ -77,7 +77,7 @@ SUBJECT_BOUNDARY_WORDS = {
 
 
 def extract_subject_title_candidates(query: str, max_terms: int = 5) -> list[str]:
-    """Generate longest-first title candidates while preserving title stopwords."""
+    """Generate title candidates, preferring phrases with more meaningful tokens."""
     # Claims can begin with a date adjunct ("On June 13th, 1986, ...").
     # Remove that prefix before guessing the leading subject page title.
     subject_query = DATE_PREFIX_RE.sub("", query, count=1)
@@ -99,20 +99,25 @@ def extract_subject_title_candidates(query: str, max_terms: int = 5) -> list[str
         if len(content_words) >= max_terms:
             break
 
-    # First try the literal leading title phrase ("The Cincinnati Kid",
-    # "Highway to Heaven", "The King and I"). If that does not match a page,
-    # retain the previous stopword-filtered candidates as a fallback for
-    # titles whose Wikipedia page omits an article or preposition.
-    candidates: list[str] = []
+    # Keep original title words first when equally informative, but try a
+    # stopword-filtered full phrase before shorter literal prefixes. This avoids
+    # resolving "The Greek language" to the unrelated page "The Greek".
+    candidates: list[tuple[int, int, int, str]] = []
     seen: set[str] = set()
-    for candidate_words in (title_words, content_words):
+    for variant_order, candidate_words in enumerate((title_words, content_words)):
         for length in range(len(candidate_words), 0, -1):
             candidate = " ".join(candidate_words[:length])
             key = candidate.casefold()
-            if key not in seen:
-                seen.add(key)
-                candidates.append(candidate)
-    return candidates
+            if key in seen:
+                continue
+            seen.add(key)
+            meaningful_count = sum(
+                normalize_page_title(token) not in SEARCH_STOPWORDS
+                for token in candidate_words[:length]
+            )
+            candidates.append((-meaningful_count, variant_order, -length, candidate))
+    candidates.sort()
+    return [candidate for _, _, _, candidate in candidates]
 
 
 def build_fts_query(terms: list[str], operator: str = "OR") -> str:
@@ -420,6 +425,7 @@ def search_index_with_connection(
 
     subject_pages = _find_exact_subject_pages(connection, query)
     subject_results: list[dict[str, Any]] = []
+    unresolved_disambiguation_titles: set[str] = set()
     # Search deeper within the subject page so specific annotated evidence
     # is not excluded by an overly small per-page candidate cap.
     per_page_limit = max(1, min(10, top_k))
@@ -436,9 +442,23 @@ def search_index_with_connection(
                         )
                     )
                 continue
+            # Do not let a global BM25 match silently choose one arbitrary
+            # page variant when the disambiguation page could not be resolved.
+            unresolved_disambiguation_titles.add(normalize_page_title(page_id))
         subject_results.extend(
             _search_subject_page(connection, page_id, title_terms, query, per_page_limit)
         )
+
+    if unresolved_disambiguation_titles:
+        global_results = [
+            item for item in global_results
+            if not (
+                item["page_id"] not in {page_id for page_id, _ in subject_pages}
+                and normalize_page_title(
+                    str(item["page_id"]).split("_-LRB-", 1)[0]
+                ) in unresolved_disambiguation_titles
+            )
+        ]
 
     merged: list[dict[str, Any]] = []
     seen: set[tuple[str, int]] = set()
