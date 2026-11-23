@@ -48,7 +48,7 @@ function readablePageId(pageId = "") {
 
 function formatEvidenceText(text = "") {
   return String(text)
-    .split("\\t", 1)[0]
+    .split("\t", 1)[0]
     .replace(/-LRB-/g, "(")
     .replace(/-RRB-/g, ")")
     .replace(/-LSB-/g, "[")
@@ -56,13 +56,17 @@ function formatEvidenceText(text = "") {
     .replace(/-LCB-/g, "{")
     .replace(/-RCB-/g, "}")
     .replace(/-COLON-/g, ":")
-    .replace(/``|''/g, '"')
-    .replace(/"\\s+([^"]*?)\\s+"/g, '"$1"')
-    .replace(/\\s+([,.;:!?])/g, "$1")
-    .replace(/([([{])\\s+/g, "$1")
-    .replace(/\\s+([)\\]}])/g, "$1")
-    .replace(/([)\\]}])(?=[^\\s,.;:!?])/g, "$1 ")
-    .replace(/\\s{2,}/g, " ")
+    .replace(/``|''/g, '" '.trim())
+    .replace(/"\s+([^"]*?)\s+"/g, '"$1"')
+    .replace(/\s+([,.;:!?])/g, "$1")
+    .replace(/\(\s+/g, "(")
+    .replace(/\[\s+/g, "[")
+    .replace(/\{\s+/g, "{")
+    .replace(/\s+\)/g, ")")
+    .replace(/\s+\]/g, "]")
+    .replace(/\s+\}/g, "}")
+    .replace(/(\)|\]|\})(?=[^\s,.;:!?])/g, "$1 ")
+    .replace(/\s{2,}/g, " ")
     .trim();
 }
 
