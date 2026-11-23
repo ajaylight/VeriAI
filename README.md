@@ -98,7 +98,13 @@ Run the stratified evaluation from `backend/` after installing the optional NLI 
 python -m app.scripts.evaluate_verification --split paper_dev --limit 30 --top-k 5 --seed 42 --show-errors --output ..\reports\verification_paper_dev_30.json
 ```
 
-The default sample is stratified by the three FEVER labels. Use `--limit 0` to evaluate every labelled record in the split. The report separates three-class classification metrics (accuracy, macro precision/recall/F1, per-class scores and confusion matrix) from evidence retrieval metrics on claims that have sentence-level gold evidence. The first is an end-to-end retrieval-plus-NLI result; it is not an oracle-evidence NLI score. Start with a small sample before running a large evaluation because full-corpus retrieval and CPU inference can take substantial time.
+The default sample is stratified by the three FEVER labels. Use `--limit 0` to evaluate every labelled record in the split. To create a disjoint validation sample, pass `--exclude-report` with a prior evaluation JSON report; the evaluator removes every claim ID listed in that report before sampling. The report records the exclusion count, seed, selected claim IDs, and metrics so the run can be reproduced. For example, after preserving the earlier 30-claim baseline report at `..eports\verification_paper_dev_30.json`, run an independent 100-claim sample with:
+
+```cmd
+python -m app.scripts.evaluate_verification --split paper_dev --limit 100 --top-k 5 --seed 2026 --exclude-report ..\reports\verification_paper_dev_30.json --show-errors --output ..\reports\verification_paper_dev_holdout_100.json
+```
+
+The report separates three-class classification metrics (accuracy, macro precision/recall/F1, per-class scores and confusion matrix) from evidence retrieval metrics on claims that have sentence-level gold evidence. The first is an end-to-end retrieval-plus-NLI result; it is not an oracle-evidence NLI score. Start with a small sample before running a large evaluation because full-corpus retrieval and CPU inference can take substantial time.
 
 ## Important evaluation notes
 \`NOT ENOUGH INFO\` means the available evidence is insufficient; it does not mean the claim is false. FEVER's Wikipedia evidence annotations are sentence references (page ID/title and sentence number). Retrieval evaluation should distinguish records with non-empty annotation sets from records that contain an actual Wikipedia sentence reference.
