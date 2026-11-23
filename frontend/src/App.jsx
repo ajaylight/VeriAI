@@ -46,6 +46,26 @@ function readablePageId(pageId = "") {
     .replace(/-COLON-/g, ":");
 }
 
+function formatEvidenceText(text = "") {
+  return String(text)
+    .split("\\t", 1)[0]
+    .replace(/-LRB-/g, "(")
+    .replace(/-RRB-/g, ")")
+    .replace(/-LSB-/g, "[")
+    .replace(/-RSB-/g, "]")
+    .replace(/-LCB-/g, "{")
+    .replace(/-RCB-/g, "}")
+    .replace(/-COLON-/g, ":")
+    .replace(/``|''/g, '"')
+    .replace(/"\\s+([^"]*?)\\s+"/g, '"$1"')
+    .replace(/\\s+([,.;:!?])/g, "$1")
+    .replace(/([([{])\\s+/g, "$1")
+    .replace(/\\s+([)\\]}])/g, "$1")
+    .replace(/([)\\]}])(?=[^\\s,.;:!?])/g, "$1 ")
+    .replace(/\\s{2,}/g, " ")
+    .trim();
+}
+
 function formatRelation(relation = "neutral") {
   return relation.replaceAll("_", " ");
 }
@@ -67,7 +87,7 @@ function EvidenceCard({ item, index }) {
         <span className="evidence-number">Evidence {index + 1}</span>
         <span className={`relation-tag ${relation}`}>{formatRelation(relation)}</span>
       </div>
-      <p className="evidence-text">{item.text}</p>
+      <p className="evidence-text">{formatEvidenceText(item.text)}</p>
       <div className="evidence-meta">
         <span>{readablePageId(item.page_id)}</span>
         <span>Sentence {item.sentence_id}</span>
@@ -309,9 +329,9 @@ export default function App() {
                     <small>sentences</small>
                   </div>
                   <div className="stat-card">
-                    <span>NLI softmax score</span>
+                    <span>NLI softmax score (uncalibrated)</span>
                     <strong>{score}</strong>
-                    <small>uncalibrated model score</small>
+                    <small>not a factual confidence score</small>
                   </div>
                   <div className="stat-card">
                     <span>Inference device</span>
@@ -349,7 +369,7 @@ export default function App() {
                 </div>
 
                 <div className="model-note">
-                  <strong>About the score:</strong> The NLI softmax score is uncalibrated. It is not a probability that the claim is factually correct.
+                  <strong>About the score:</strong> {result.confidence_note || "The NLI softmax score is uncalibrated and is not a probability that the claim is factually correct."} It is not a probability that the claim is factually correct.
                   <br />
                   <strong>Model:</strong> {result.model_name || "DeBERTa NLI"}
                 </div>
