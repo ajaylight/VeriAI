@@ -56,7 +56,7 @@ function formatEvidenceText(text = "") {
     .replace(/-LCB-/g, "{")
     .replace(/-RCB-/g, "}")
     .replace(/-COLON-/g, ":")
-    .replace(/``|''/g, '" '.trim())
+    .replace(/``|''/g, '"')
     .replace(/"\s+([^"]*?)\s+"/g, '"$1"')
     .replace(/\s+([,.;:!?])/g, "$1")
     .replace(/\(\s+/g, "(")
@@ -373,7 +373,7 @@ export default function App() {
                 </div>
 
                 <div className="model-note">
-                  <strong>About the score:</strong> {result.confidence_note || "The NLI softmax score is uncalibrated and is not a probability that the claim is factually correct."} It is not a probability that the claim is factually correct.
+                  <strong>About the score:</strong> {result.confidence_note || "The NLI softmax score is uncalibrated."} It does not indicate the probability that the claim is factually correct.
                   <br />
                   <strong>Model:</strong> {result.model_name || "DeBERTa NLI"}
                 </div>
