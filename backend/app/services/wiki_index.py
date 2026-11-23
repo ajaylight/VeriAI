@@ -72,32 +72,47 @@ SUBJECT_BOUNDARY_WORDS = {
     "died", "wins", "won", "became", "becomes", "born", "lived", "serves",
     "served", "founded", "helped", "plays", "played", "wrote", "released",
     "started", "includes", "included", "contains", "consists", "affects",
-    "affect", "owns", "owned",
+    "affect", "owns", "owned", "stars", "starred", "uses", "used",
 }
 
 
 def extract_subject_title_candidates(query: str, max_terms: int = 5) -> list[str]:
-    """Generate longest-first title candidates from the leading subject phrase."""
+    """Generate longest-first title candidates while preserving title stopwords."""
     # Claims can begin with a date adjunct ("On June 13th, 1986, ...").
     # Remove that prefix before guessing the leading subject page title.
     subject_query = DATE_PREFIX_RE.sub("", query, count=1)
     words = TITLE_TOKEN_RE.findall(subject_query)
+    title_words: list[str] = []
     content_words: list[str] = []
     for word in words:
         # Treat possessive forms such as "Reed's" as the underlying title token
         # ("Reed") so exact Wikipedia page matching still works.
         title_word = re.sub(r"['’]s$", "", word, flags=re.IGNORECASE)
         normalized = normalize_page_title(title_word)
-        if normalized in SUBJECT_BOUNDARY_WORDS and content_words:
+        if normalized in SUBJECT_BOUNDARY_WORDS and title_words:
             break
-        if normalized and normalized not in SEARCH_STOPWORDS:
+        if not normalized:
+            continue
+        title_words.append(title_word)
+        if normalized not in SEARCH_STOPWORDS:
             content_words.append(title_word)
         if len(content_words) >= max_terms:
             break
-    return [
-        " ".join(content_words[:length])
-        for length in range(len(content_words), 0, -1)
-    ]
+
+    # First try the literal leading title phrase ("The Cincinnati Kid",
+    # "Highway to Heaven", "The King and I"). If that does not match a page,
+    # retain the previous stopword-filtered candidates as a fallback for
+    # titles whose Wikipedia page omits an article or preposition.
+    candidates: list[str] = []
+    seen: set[str] = set()
+    for candidate_words in (title_words, content_words):
+        for length in range(len(candidate_words), 0, -1):
+            candidate = " ".join(candidate_words[:length])
+            key = candidate.casefold()
+            if key not in seen:
+                seen.add(key)
+                candidates.append(candidate)
+    return candidates
 
 
 def build_fts_query(terms: list[str], operator: str = "OR") -> str:
