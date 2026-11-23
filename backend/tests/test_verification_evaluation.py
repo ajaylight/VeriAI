@@ -5,6 +5,7 @@ from pathlib import Path
 from app.scripts.evaluate_verification import (
     classification_metrics,
     load_evaluation_records,
+    load_excluded_claim_ids,
     run_evaluation,
     stratified_sample,
 )
@@ -141,3 +142,48 @@ def test_end_to_end_evaluation_separates_classification_and_retrieval_metrics(tm
         "REFUTES": 1,
         "SUPPORTS": 1,
     }
+
+
+
+def test_load_excluded_claim_ids_reads_ids_and_validates_split(tmp_path: Path):
+    report = tmp_path / "prior-report.json"
+    report.write_text(
+        json.dumps({
+            "split": "paper_dev",
+            "claim_details": [{"id": 10}, {"id": 20}, {"id": None}],
+        }),
+        encoding="utf-8",
+    )
+
+    assert load_excluded_claim_ids(report, "paper_dev") == {"10", "20"}
+
+    import pytest
+    with pytest.raises(ValueError, match="expected 'train'"):
+        load_excluded_claim_ids(report, "train")
+
+
+def test_load_evaluation_records_excludes_prior_claim_ids(tmp_path: Path):
+    path = tmp_path / "paper_dev.jsonl"
+    records = [
+        {"id": 1, "claim": "Support one.", "label": "SUPPORTS", "evidence": []},
+        {"id": 2, "claim": "Support two.", "label": "SUPPORTS", "evidence": []},
+        {"id": 3, "claim": "Refute one.", "label": "REFUTES", "evidence": []},
+        {"id": 4, "claim": "Refute two.", "label": "REFUTES", "evidence": []},
+        {"id": 5, "claim": "Unknown one.", "label": "NOT ENOUGH INFO", "evidence": []},
+        {"id": 6, "claim": "Unknown two.", "label": "NOT ENOUGH INFO", "evidence": []},
+    ]
+    path.write_text(
+        "".join(json.dumps(record) + "\n" for record in records),
+        encoding="utf-8",
+    )
+
+    total, selected = load_evaluation_records(
+        "paper_dev",
+        limit=0,
+        seed=2026,
+        data_dir=tmp_path,
+        excluded_ids={"1", "4", "6"},
+    )
+
+    assert total == 6
+    assert {item["id"] for item in selected} == {2, 3, 5}
