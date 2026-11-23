@@ -1,4 +1,7 @@
+import os
+
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas import (
     ClaimExtractionRequest,
@@ -16,6 +19,26 @@ app = FastAPI(
     title="VeriAI API",
     description="Evidence-grounded, claim-level answer verification.",
     version="0.4.0",
+)
+
+# Permit the local Vite development server to call this API from the browser.
+# Additional trusted frontend origins can be supplied as a comma-separated
+# VERIAI_CORS_ORIGINS environment variable.
+configured_origins = [
+    origin.strip()
+    for origin in os.getenv("VERIAI_CORS_ORIGINS", "").split(",")
+    if origin.strip()
+]
+allowed_origins = sorted(set(configured_origins + [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]))
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization"],
 )
 
 _nli_verifier = NliVerifier()
