@@ -16,3 +16,7 @@ data/fever/*
 !data/fever/README.md
 data/index/*
 !data/index/.gitkeep
+
+# Frontend generated files
+frontend/node_modules/
+frontend/dist/
