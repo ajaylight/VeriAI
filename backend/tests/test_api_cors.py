@@ -31,3 +31,19 @@ def test_untrusted_browser_origin_is_not_reflected():
     )
 
     assert "access-control-allow-origin" not in response.headers
+
+
+
+def test_vite_production_preview_origin_can_preflight_verification_post():
+    response = client.options(
+        "/verification/verify",
+        headers={
+            "Origin": "http://127.0.0.1:4173",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers["access-control-allow-origin"] == "http://127.0.0.1:4173"
+    assert "POST" in response.headers["access-control-allow-methods"]
