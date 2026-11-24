@@ -376,9 +376,11 @@ export default function App() {
                     <span>{evidence.length} evaluated</span>
                   </div>
                   {evidence.length ? (
-                    evidence.map((item, index) => (
-                      <EvidenceCard key={`${item.page_id}-${item.sentence_id}-${index}`} item={item} index={index} />
-                    ))
+                    <div className="evidence-grid">
+                      {evidence.map((item, index) => (
+                        <EvidenceCard key={`${item.page_id}-${item.sentence_id}-${index}`} item={item} index={index} />
+                      ))}
+                    </div>
                   ) : (
                     <p className="muted-copy">No evidence sentences were scored.</p>
                   )}
